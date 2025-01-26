@@ -1,0 +1,267 @@
+import { useState, useEffect } from "react";
+
+import {
+  Group,
+  Text,
+  Button,
+  TextInput,
+  Image,
+  Modal,
+} from "@mantine/core";
+import { useDisclosure } from "@mantine/hooks";
+import { useForm } from "@mantine/form";
+import { useParams } from "react-router";
+
+import VaultTable from "../components/VaultTable";
+import Vault from "../components/Vault";
+
+import { useSiteStore } from "../Store";
+import { API } from "../constant";
+import { getToken } from "../helpers";
+import { Breadcrumbs } from "../components/Breadcrumbs";
+import { PageTitle } from "../components/PageTitle";
+import { PostToVaultForm } from "../components/forms/PostToVaultForm";
+
+import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import filterIcon from "../assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import searchIcon from "../assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+
+const VaultPage = () => {
+  const { id } = useParams();
+  const { selectedOrg } = useSiteStore();
+  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [vault, setVault] = useState(false);
+
+  const [opened, { open, close }] = useDisclosure(false);
+
+  const form = useForm({
+    mode: "uncontrolled",
+    initialValues: {
+      search: "",
+      termsOfService: false,
+    },
+
+    /* validate: {
+      search: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+    }, */
+  });
+
+  const columns = ["label", "quantity", "note", "delete"];
+
+  const breadcrumbs = [
+    {
+      label: selectedOrg ? selectedOrg.name : '',
+      link: "",
+    },
+    {
+      label: "org vaults",
+      link: "",
+    },
+    {
+      label: vault ? vault.data.name : "vault",
+      link: "",
+    },
+  ];
+
+  const fetchVault = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${API}/vaults/${id}?populate[0]=Items&populate[1]=Items.item`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            // set the auth token to the user's jwt
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setVault(data ?? []);
+    } catch (error) {
+      console.error(error);
+      // message.error("Error while fetching profiles!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const transform = (data) =>
+    data.map((item) => {
+      return {
+        label: item.item.name,
+        quantity: item.quantity,
+        note: item.note,
+        delete: true,
+        item: item,
+      };
+    });
+
+  const postToVault = async (values) => {
+    // TODO: currently theres no way to add a new element to strapis repeat components, the whole table needs to be replaced
+    // find a better way?
+    close();
+    setIsLoading(true);
+    const vaultId = vault.data.documentId;
+
+    const updatedItems = vault.data.Items.map((item) => {
+      if (item.item.documentId === values.item.documentId) {
+        return {
+          item: item.item.documentId,
+          quantity: item.quantity + values.quantity,
+        };
+      }
+      return {
+        item: item.item.documentId,
+        quantity: item.quantity,
+      };
+    });
+
+    let addItem = true;
+    updatedItems.forEach((item) => {
+      if (item.item === values.item.documentId) {
+        addItem = false;
+      }
+    });
+
+    if (addItem) {
+      updatedItems.push({
+        item: values.item.documentId,
+        quantity: values.quantity,
+      });
+    }
+
+    try {
+      const response = await fetch(`${API}/vaults/${vaultId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // set the auth token to the user's jwt
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          data: {
+            Items: updatedItems,
+          },
+        }),
+      });
+      await response.json();
+      await fetchVault();
+    } catch (error) {
+      console.error(error);
+      // message.error("Error while fetching profiles!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteFromVault = async (values) => {
+    // TODO: currently theres no way to add a new element to strapis repeat components, the whole table needs to be replaced
+    // find a better way?
+    close();
+    setIsLoading(true);
+    const vaultId = vault.data.documentId;
+
+    const filteredItems = vault.data.Items.filter((item) => item.id !== values);
+
+    const transformedItems = filteredItems.map((item) => {
+      return {
+        item: item.item.documentId,
+        quantity: item.quantity,
+      };
+    });
+
+    try {
+      const response = await fetch(`${API}/vaults/${vaultId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // set the auth token to the user's jwt
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          data: {
+            Items: transformedItems,
+          },
+        }),
+      });
+      await response.json();
+      await fetchVault();
+    } catch (error) {
+      console.error(error);
+      // message.error("Error while fetching profiles!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchVault();
+  }, [id]);
+
+  return vault ? (
+    <>
+      <Modal opened={opened} onClose={close} title="Add Item to Vault">
+        <PostToVaultForm post={postToVault} />
+      </Modal>
+      <Breadcrumbs breadcrumbs={breadcrumbs} />
+
+      <PageTitle
+        title={`${vault.data.name} management`}
+        description={"Manage the vault."}
+      />
+
+      <Vault>
+        <Group justify="space-between">
+          <Text fw="500" tt="capitalize">
+            All Items{" "}
+            <span style={{ opacity: 0.6 }}>{vault.data.Items.length}</span>
+          </Text>
+          <Group>
+            <form onSubmit={form.onSubmit((values) => console.log(values))}>
+              <Group justify="space-between">
+                <Group>
+                  <TextInput
+                    leftSectionPointerEvents="none"
+                    leftSection={<Image src={searchIcon} />}
+                    placeholder="Search"
+                    key={form.key("search")}
+                    {...form.getInputProps("search")}
+                  />
+                  <Button
+                    variant="outline"
+                    color="black"
+                    fw="400"
+                    /* type="submit" */
+                    leftSection={<Image src={filterIcon} />}
+                  >
+                    Filter
+                  </Button>
+                </Group>
+              </Group>
+            </form>
+            <Button
+              color="black"
+              fw="400"
+              leftSection={<Image src={plusIcon} />}
+              onClick={open}
+            >
+              Add Item
+            </Button>
+          </Group>
+        </Group>
+
+        {vault.data.Items.length ? (
+          <VaultTable
+            columns={columns}
+            elements={transform(vault.data.Items)}
+            deleteItem={deleteFromVault}
+          />
+        ) : null}
+      </Vault>
+    </>
+  ) : null;
+};
+
+export default VaultPage;

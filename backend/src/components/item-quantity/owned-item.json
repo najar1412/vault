@@ -1,0 +1,23 @@
+{
+  "collectionName": "components_item_quantity_owned_items",
+  "info": {
+    "displayName": "OwnedItem",
+    "description": ""
+  },
+  "options": {},
+  "attributes": {
+    "item": {
+      "type": "relation",
+      "relation": "oneToOne",
+      "target": "api::item.item"
+    },
+    "quantity": {
+      "required": true,
+      "default": 1,
+      "type": "integer"
+    },
+    "note": {
+      "type": "string"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "vaults",
+  "info": {
+    "singularName": "vault",
+    "pluralName": "vaults",
+    "displayName": "Vault",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string"
+    },
+    "organisation": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::organisation.organisation",
+      "inversedBy": "vaults"
+    },
+    "Items": {
+      "type": "component",
+      "repeatable": true,
+      "component": "item-quantity.owned-item"
+    }
+  }
+}

@@ -1,0 +1,7 @@
+.active {
+  opacity: 1;
+}
+
+.not-active {
+  opacity: 0.5;
+}

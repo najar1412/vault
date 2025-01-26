@@ -4,12 +4,17 @@ import { createRoot } from "react-dom/client";
 import { HashRouter, Routes, Route, Navigate } from "react-router";
 import { createTheme, MantineProvider } from "@mantine/core";
 
-import Home from "./Pages/Home.jsx";
-import About from "./Pages/About.jsx";
-import SignIn from "./Pages/SignIn/SignIn.jsx";
-import SignUp from "./Pages/SignUp/SignUp.jsx";
-import Profile from "./components/Profile/Profile.jsx";
-import Root from "./Pages/Root.jsx";
+import HomePage from "./Pages/HomePage.jsx";
+import AboutPage from "./Pages/AboutPage.jsx";
+import SignInPage from "./Pages/SignInPage.jsx";
+import SignUpPage from "./Pages/SignUpPage.jsx";
+import ProfilePage from "./Pages/ProfilePage.jsx";
+import NotificationPage from "./Pages/NotificationPage.jsx";
+import Root from "./Pages/layout/Root.jsx";
+import Layout from "./Pages/layout/Layout.jsx";
+import VaultPage from "./Pages/VaultPage.jsx";
+import RewardCalculatorPage from "./Pages/RewardCalculatorPage.jsx";
+import OrganisationPage from "./Pages/OrganisationPage.jsx";
 
 import AuthProvider from "./components/AuthProvider/AuthProvider.jsx";
 import { getToken } from "./helpers";
@@ -18,7 +23,7 @@ import "./index.css";
 import "@mantine/core/styles.css";
 
 const theme = createTheme({
-  /** Put your mantine theme override here */
+  fontFamily: "Poppins, sans-serif",
 });
 
 createRoot(document.getElementById("root")).render(
@@ -28,14 +33,46 @@ createRoot(document.getElementById("root")).render(
         <HashRouter>
           <Routes>
             <Route path="/" element={<Root />}>
-              <Route index element={<Home />} />
-              <Route path="about" element={<About />} />
-              <Route path="signin" element={<SignIn />} />
-              <Route path="signup" element={<SignUp />} />
-              <Route
-                path="profile"
-                element={getToken() ? <Profile /> : <Navigate to="/signin" />}
-              />
+              <Route index element={<HomePage />} />
+              <Route path="about" element={<AboutPage />} />
+              <Route path="signin" element={<SignInPage />} />
+              <Route path="signup" element={<SignUpPage />} />
+              <Route path="/" element={<Layout />}>
+                <Route
+                  path="organisation"
+                  element={
+                    <OrganisationPage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+                <Route
+                  path="notifications"
+                  element={
+                    <NotificationPage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+                <Route
+                  path="profile"
+                  element={
+                    <ProfilePage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+
+                
+
+
+                <Route
+                  path="vault/:id"
+                  element={
+                    <VaultPage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+                <Route
+                  path="reward-calculator"
+                  element={
+                    <RewardCalculatorPage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+              </Route>
             </Route>
           </Routes>
         </HashRouter>

@@ -1,0 +1,50 @@
+{
+  "kind": "collectionType",
+  "collectionName": "notifications",
+  "info": {
+    "singularName": "notification",
+    "pluralName": "notifications",
+    "displayName": "Notification",
+    "description": ""
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "add-to-org-member"
+      ],
+      "required": true
+    },
+    "requiresConfirmation": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "senderRelation": {
+      "type": "string"
+    },
+    "senderId": {
+      "type": "string"
+    },
+    "receiverRelation": {
+      "type": "string"
+    },
+    "receiverId": {
+      "type": "string"
+    },
+    "confirmationConfirmed": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    },
+    "resolved": {
+      "type": "boolean",
+      "default": false,
+      "required": true
+    }
+  }
+}

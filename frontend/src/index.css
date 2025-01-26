@@ -5,10 +5,32 @@
 
   color-scheme: light dark;
   color: #242424;
-  background-color: white;
+  background-color: rgb(240, 240, 240);
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+#root {
+  background: rgb(240, 240, 240);
+}
+
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins-Regular"), url("./assets/fonts/Poppins-Regular.ttf");
+  font-weight: 400;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins-Medium"), url("./assets/fonts/Poppins-Medium.ttf");
+  font-weight: 500;
+  font-style: normal;
+}
+@font-face {
+  font-family: "Poppins";
+  src: local("Poppins-Bold"), url("./assets/fonts/Poppins-Bold.ttf");
+  font-weight: 600;
+  font-style: normal;
 }
