@@ -9,6 +9,7 @@ import {
   Grid,
   Image,
   UnstyledButton,
+  Divider,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 
@@ -44,11 +45,7 @@ const ProfilePage = () => {
 
   const breadcrumbs = [
     {
-      label: "settings",
-      link: "",
-    },
-    {
-      label: "profile",
+      label: "player",
       link: "",
     },
   ];
@@ -60,92 +57,105 @@ const ProfilePage = () => {
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <PageTitle title={`profile`} description={"words, things and stuff"} />
-      <Stack gap="xl">
-        
-        <Stack gap="xs">
-          <Group gap={"xl"}>
-            <Group>
-              <Image src={orgIcon} />
-              <Title order={2} fw={400} tt="capitalize">
-                my organisations
-              </Title>
-            </Group>
-          </Group>
-          <Grid>
-            <Grid.Col span={6}>
-              <Stack>
-                <Text tt="capitalize">Owned Organisations</Text>
-                <Group>
-                  <Button
-                    onClick={() => setCustomModalContent("createOrg")}
-                    color="black"
-                    fw="400"
-                    leftSection={<Image src={plusIcon} />}
-                    // onClick={open}
-                    tt="capitalize"
-                  >
-                    create organisation
-                  </Button>
-                </Group>
-                <Stack gap={0}>
-                  {ownerOrgs && ownerOrgs.length ? (
-                    ownerOrgs.map((org) => <OrgCard organisation={org} />)
-                  ) : (
-                    <Text opacity={0.5}>No owned organisations</Text>
-                  )}
-                </Stack>
-              </Stack>
-            </Grid.Col>
-            <Grid.Col span={6}>
-              <Stack>
-                <Text tt="capitalize">member Organisations</Text>
-                <Stack gap={0}>
-                  {memberOrgs && memberOrgs.length ? (
-                    memberOrgs.map((org) => <OrgCard organisation={org} />)
-                  ) : (
-                    <Text opacity={0.5}>No organisations</Text>
-                  )}
-                </Stack>
-              </Stack>
-            </Grid.Col>
-          </Grid>
-        </Stack>
-        <Stack gap="xs">
-          <Group gap={"xl"}>
-            <Group>
-              <Image src={vaultIcon} />
-              <Title order={2} fw={400} tt="capitalize">
-                my personal vaults
-              </Title>
-            </Group>
-          </Group>
-          <Stack>
-            <Button
-              color="black"
-              fw="400"
-              leftSection={<Image src={plusIcon} />}
-              onClick={() => setCustomModalContent("createPersonalVault")}
-              tt="capitalize"
-              w={"fit-content"}
-            >
-              create vault
-            </Button>
+      <Stack gap="4rem">
+        <PageTitle
+          title={`${user ? user.username : ""}`}
+          description={"Manage the player"}
+        />
+        <Divider />
 
-            {userVaults && userVaults.length ? (
-              <Stack gap={0}>
-                {userVaults.map((vault) => (
-                  <VaultCard
-                    key={vault.documentId}
-                    vault={vault}
-                    isPersonalVault
-                  />
-                ))}
+        <Stack>
+          <Group>
+            <Image src={orgIcon} width={40} height={40} />
+            <Title fw={500} tt="capitalize">
+              my organisations
+            </Title>
+          </Group>
+          <Text size="xl" opacity={0.6}>
+            Organisation association
+          </Text>
+        </Stack>
+
+        <Grid>
+          <Grid.Col span={6}>
+            <Stack>
+              <Text tt="capitalize">Owned Organisations</Text>
+
+              <Stack>
+                <Button
+                  w="fit-content"
+                  onClick={() => setCustomModalContent({ type: "createOrg" })}
+                  color="black"
+                  fw="400"
+                  leftSection={<Image src={plusIcon} />}
+                  // onClick={open}
+                  tt="capitalize"
+                >
+                  create organisation
+                </Button>
+
+                {ownerOrgs && ownerOrgs.length ? (
+                  ownerOrgs.map((org) => <OrgCard organisation={org} />)
+                ) : (
+                  <Text opacity={0.5}>No owned organisations</Text>
+                )}
               </Stack>
-            ) : (
-              <Text opacity={0.5}>No personal vaults</Text>
-            )}
-          </Stack>
+            </Stack>
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Stack>
+              <Text tt="capitalize">member Organisations</Text>
+              <Stack gap={0}>
+                {memberOrgs && memberOrgs.length ? (
+                  memberOrgs.map((org) => <OrgCard organisation={org} />)
+                ) : (
+                  <Text opacity={0.5}>No organisations</Text>
+                )}
+              </Stack>
+            </Stack>
+          </Grid.Col>
+        </Grid>
+        <Divider />
+
+        <Stack>
+          <Group>
+            <Image src={vaultIcon} width={40} height={40} />
+            <Title fw={500} tt="capitalize">
+              my personal vaults
+            </Title>
+          </Group>
+          <Text size="xl" opacity={0.6}>
+            Management of players personal vaults.
+          </Text>
+        </Stack>
+
+        <Stack>
+          <Button
+            color="black"
+            fw="400"
+            leftSection={<Image src={plusIcon} />}
+            onClick={() =>
+              setCustomModalContent({ type: "createPersonalVault" })
+            }
+            tt="capitalize"
+            w={"fit-content"}
+          >
+            create vault
+          </Button>
+
+          {userVaults && userVaults.length ? (
+            <Stack gap={0}>
+              {userVaults.map((vault) => (
+                <VaultCard
+                  key={vault.documentId}
+                  vault={vault}
+                  isPersonalVault
+                />
+              ))}
+            </Stack>
+          ) : (
+            <Text opacity={0.5}>No personal vaults</Text>
+          )}
         </Stack>
       </Stack>
     </>

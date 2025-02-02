@@ -7,6 +7,11 @@ import {
   TextInput,
   Image,
   Modal,
+  Grid,
+  Stack,
+  Alert,
+  Badge,
+  Divider,
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
@@ -25,6 +30,7 @@ import { PostToVaultForm } from "../components/forms/PostToVaultForm";
 import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import filterIcon from "../assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import searchIcon from "../assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import publicIcon from "../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 
 const VaultPage = () => {
   const { id } = useParams();
@@ -51,7 +57,7 @@ const VaultPage = () => {
 
   const breadcrumbs = [
     {
-      label: selectedOrg ? selectedOrg.name : '',
+      label: selectedOrg ? selectedOrg.name : "",
       link: "",
     },
     {
@@ -78,6 +84,8 @@ const VaultPage = () => {
         }
       );
       const data = await response.json();
+      console.log("**********");
+      console.log(data);
       setVault(data ?? []);
     } catch (error) {
       console.error(error);
@@ -206,60 +214,106 @@ const VaultPage = () => {
         <PostToVaultForm post={postToVault} />
       </Modal>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-
-      <PageTitle
-        title={`${vault.data.name} management`}
-        description={"Manage the vault."}
-      />
-
-      <Vault>
-        <Group justify="space-between">
-          <Text fw="500" tt="capitalize">
-            All Items{" "}
-            <span style={{ opacity: 0.6 }}>{vault.data.Items.length}</span>
-          </Text>
-          <Group>
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
-              <Group justify="space-between">
+      <Stack gap="4rem">
+        <Grid align="center">
+          <Grid.Col span={6}>
+            <PageTitle
+              title={`${vault.data.name}`}
+              description={"Manage the vault."}
+            />
+          </Grid.Col>
+          <Grid.Col span={6}>
+            <Alert
+              variant="light"
+              color={vault.data.marketable ? "red" : "blue"}
+              icon={
+                vault.data.marketable ? (
+                  <Badge color="red" p={0}>
+                    <Image src={publicIcon} width={"20rem"} height={"20rem"} />
+                  </Badge>
+                ) : (
+                  null
+                )
+              }
+              title={
+                vault.data.marketable
+                  ? `Vault is public and listed on the market.`
+                  : "Vault is private"
+              }
+            >
+              <Stack gap={0}>
+                <Text fw="bold">
+                  {vault.data.marketable ? "Public" : "Private"}
+                </Text>
                 <Group>
-                  <TextInput
-                    leftSectionPointerEvents="none"
-                    leftSection={<Image src={searchIcon} />}
-                    placeholder="Search"
-                    key={form.key("search")}
-                    {...form.getInputProps("search")}
-                  />
+                  <Text>
+                    {vault.data.marketable
+                      ? "Make vault private?"
+                      : "Make vault public?"}
+                  </Text>
                   <Button
-                    variant="outline"
-                    color="black"
-                    fw="400"
-                    /* type="submit" */
-                    leftSection={<Image src={filterIcon} />}
+                    color={vault.data.marketable ? "red" : "blue"}
+                    onClick={() => console.log("clicked")}
                   >
-                    Filter
+                    {vault.data.marketable ? "make private" : "make public"}
                   </Button>
                 </Group>
-              </Group>
-            </form>
-            <Button
-              color="black"
-              fw="400"
-              leftSection={<Image src={plusIcon} />}
-              onClick={open}
-            >
-              Add Item
-            </Button>
-          </Group>
-        </Group>
+              </Stack>
+            </Alert>
+          </Grid.Col>
+        </Grid>
 
-        {vault.data.Items.length ? (
-          <VaultTable
-            columns={columns}
-            elements={transform(vault.data.Items)}
-            deleteItem={deleteFromVault}
-          />
-        ) : null}
-      </Vault>
+        <Divider />
+
+        <Vault>
+          <Group justify="space-between">
+            <Text fw="500" tt="capitalize">
+              All Items{" "}
+              <span style={{ opacity: 0.6 }}>{vault.data.Items.length}</span>
+            </Text>
+            <Group>
+              <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <Group justify="space-between">
+                  <Group>
+                    <TextInput
+                      leftSectionPointerEvents="none"
+                      leftSection={<Image src={searchIcon} />}
+                      placeholder="Search"
+                      key={form.key("search")}
+                      {...form.getInputProps("search")}
+                    />
+                    <Button
+                      variant="outline"
+                      color="black"
+                      fw="400"
+                      /* type="submit" */
+                      leftSection={<Image src={filterIcon} />}
+                    >
+                      Filter
+                    </Button>
+                  </Group>
+                </Group>
+              </form>
+              <Button
+                color="black"
+                fw="400"
+                leftSection={<Image src={plusIcon} />}
+                onClick={open}
+              >
+                Add Item
+              </Button>
+            </Group>
+          </Group>
+
+          {vault.data.Items.length ? (
+            <VaultTable
+              columns={columns}
+              elements={transform(vault.data.Items)}
+              deleteItem={deleteFromVault}
+            />
+          ) : null}
+        </Vault>
+      </Stack>
     </>
   ) : null;
 };

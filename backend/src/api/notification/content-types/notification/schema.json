@@ -15,7 +15,9 @@
     "type": {
       "type": "enumeration",
       "enum": [
-        "add-to-org-member"
+        "add-to-org-member",
+        "request-org-member-invite",
+        "confirm-deal"
       ],
       "required": true
     },
@@ -38,13 +40,21 @@
     },
     "confirmationConfirmed": {
       "type": "boolean",
-      "default": false,
-      "required": true
+      "required": false
     },
     "resolved": {
       "type": "boolean",
       "default": false,
       "required": true
+    },
+    "itemId": {
+      "type": "string"
+    },
+    "reward": {
+      "type": "string"
+    },
+    "quantity": {
+      "type": "string"
     }
   }
 }

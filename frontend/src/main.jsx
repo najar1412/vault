@@ -33,11 +33,18 @@ createRoot(document.getElementById("root")).render(
         <HashRouter>
           <Routes>
             <Route path="/" element={<Root />}>
-              <Route index element={<HomePage />} />
+              {/* <Route index element={<HomePage />} /> */}
               <Route path="about" element={<AboutPage />} />
               <Route path="signin" element={<SignInPage />} />
               <Route path="signup" element={<SignUpPage />} />
               <Route path="/" element={<Layout />}>
+                <Route
+                  index
+                  path="/"
+                  element={
+                    <HomePage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
                 <Route
                   path="organisation"
                   element={
@@ -56,9 +63,6 @@ createRoot(document.getElementById("root")).render(
                     <ProfilePage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
                   }
                 />
-
-                
-
 
                 <Route
                   path="vault/:id"

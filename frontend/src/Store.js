@@ -7,7 +7,7 @@ export const useSiteStore = create((set, get) => ({
   memberOrgs: [],
   ownerOrgs: [],
   notifications: [],
-  setMemberOrgs: (orgs) => set(() => ({ memberOrgs: orgs })),
+  setRelatedOrgs: (orgs) => set(() => ({ memberOrgs: orgs })),
   setNotifications: (notifications) =>
     set(() => ({ notifications: notifications })),
   setOwnerOrgs: (orgs) => set(() => ({ ownerOrgs: orgs })),
@@ -20,12 +20,21 @@ export const useSiteStore = create((set, get) => ({
         opened: options.opened,
         open: options.open,
         close: options.close,
-        content: options.content ? options.content : null,
+        template: options.template ? options.template : null,
+        data: options.data ? options.data : null,
       },
     }),
-  setCustomModalContent: (name) => {
-    set({ customModal: { ...get().customModal, content: name } });
+  setCustomModalContent: (options) => {
+    console.log("setting custom content");
+    console.log(get().customModal);
+    set({
+      customModal: {
+        ...get().customModal,
+        template: options.type,
+        data: options.data ? options.data : null,
+      },
+    });
     get().customModal.open();
-    return console.log(get().customModal);
+    return get().customModal;
   },
 }));

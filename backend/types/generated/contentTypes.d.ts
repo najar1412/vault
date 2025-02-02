@@ -407,12 +407,11 @@ export interface ApiNotificationNotification
     draftAndPublish: false;
   };
   attributes: {
-    confirmationConfirmed: Schema.Attribute.Boolean &
-      Schema.Attribute.Required &
-      Schema.Attribute.DefaultTo<false>;
+    confirmationConfirmed: Schema.Attribute.Boolean;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    itemId: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<
       'oneToMany',
@@ -420,6 +419,7 @@ export interface ApiNotificationNotification
     > &
       Schema.Attribute.Private;
     publishedAt: Schema.Attribute.DateTime;
+    quantity: Schema.Attribute.String;
     receiverId: Schema.Attribute.String;
     receiverRelation: Schema.Attribute.String;
     requiresConfirmation: Schema.Attribute.Boolean &
@@ -428,9 +428,12 @@ export interface ApiNotificationNotification
     resolved: Schema.Attribute.Boolean &
       Schema.Attribute.Required &
       Schema.Attribute.DefaultTo<false>;
+    reward: Schema.Attribute.String;
     senderId: Schema.Attribute.String;
     senderRelation: Schema.Attribute.String;
-    type: Schema.Attribute.Enumeration<['add-to-org-member']> &
+    type: Schema.Attribute.Enumeration<
+      ['add-to-org-member', 'request-org-member-invite', 'confirm-deal']
+    > &
       Schema.Attribute.Required;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -500,6 +503,9 @@ export interface ApiVaultVault extends Struct.CollectionTypeSchema {
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::vault.vault'> &
       Schema.Attribute.Private;
+    marketable: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     name: Schema.Attribute.String;
     organisation: Schema.Attribute.Relation<
       'manyToOne',

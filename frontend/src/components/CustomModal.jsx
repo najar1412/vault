@@ -1,5 +1,4 @@
-// import { useDisclosure } from "@mantine/hooks";
-import { Modal, Button } from "@mantine/core";
+import { Modal } from "@mantine/core";
 
 import { useSiteStore } from "../Store";
 
@@ -9,14 +8,22 @@ import { CreatePersonalVaultModal } from "./modal-content/CreatePersonalVaultMod
 import { AddMemberModal } from "./modal-content/AddMemberModal";
 import { AddOwnerModal } from "./modal-content/AddOwnerModal";
 import { CreateOrgVaultModal } from "./modal-content/CreateOrgVaultModal";
+import { BidItemModal } from "./modal-content/BidItemModal";
 
 const MODALCONTENT = {
-  default: <DefaultModal />,
-  createOrg: <CreateOrgModal />,
-  createPersonalVault: <CreatePersonalVaultModal />,
-  createOrgVault: <CreateOrgVaultModal />,
-  addOwner: <AddOwnerModal />,
-  addMember: <AddMemberModal />,
+  default: () => <DefaultModal />,
+  createOrg: () => <CreateOrgModal />,
+  createPersonalVault: () => <CreatePersonalVaultModal />,
+  createOrgVault: () => <CreateOrgVaultModal />,
+  addOwner: () => <AddOwnerModal />,
+  addMember: () => <AddMemberModal />,
+  bidItem: (data) => <BidItemModal data={data} />,
+};
+
+const ModalSelector = (template, data) => {
+  console.log(template);
+  console.log(data);
+  return MODALCONTENT[template.template](data);
 };
 
 export const CustomModal = ({ opened, close }) => {
@@ -27,17 +34,20 @@ export const CustomModal = ({ opened, close }) => {
       <Modal.Root opened={opened} onClose={close}>
         <Modal.Overlay />
         <Modal.Content>
-          {customModal
-            ? MODALCONTENT[
-                customModal.content ? customModal.content : "default"
-              ]
-            : MODALCONTENT.default}
+          {customModal ? (
+            customModal.template ? (
+              <ModalSelector
+                template={customModal.template}
+                data={customModal.data}
+              />
+            ) : (
+              "default"
+            )
+          ) : (
+            MODALCONTENT.default
+          )}
         </Modal.Content>
       </Modal.Root>
-
-      {/* <Button variant="default" onClick={open}>
-        Open modal
-      </Button> */}
     </>
   );
 };

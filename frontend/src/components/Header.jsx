@@ -1,10 +1,12 @@
-import { useNavigate, Link } from "react-router";
+import { useNavigate, Link, NavLink } from "react-router";
 
-import { Container, Group, Text } from "@mantine/core";
+import { Container, Group, Text, Avatar } from "@mantine/core";
 
 import { useAuthContext } from "../context/AuthContext";
 
 import { removeToken } from "../helpers";
+
+import styles from "./Header.module.css";
 
 const Header = () => {
   const { user } = useAuthContext();
@@ -16,57 +18,90 @@ const Header = () => {
   };
 
   return (
-    <Container
-      maw={"100%"}
-      px={"3.5rem"}
-      py="xs"
-      style={{
-        display: "flex",
-        justifyContent: "flex-end",
-      }}
-    >
-      {user ? (
-        <Group>
+    <Container maw={"100%"} px={"lg"} py="xl">
+      <Group>
+        <NavLink
+          to="/"
+          className={({ isActive }) =>
+            isActive ? styles.active : styles["not-active"]
+          }
+          style={{ textDecoration: "none" }}
+        >
           <Text
-            onClick={handleLogout}
             td={"none"}
             c={"black"}
+            fw={"500"}
             tt={"capitalize"}
-            opacity={0.7}
-            style={{
-              cursor: "pointer",
-            }}
+            size={"xl"}
           >
-            logout
+            Market
           </Text>
-        </Group>
-      ) : (
-        <Group>
-          <Link to={"/"} style={{ textDecoration: "none" }}>
-            <Text td={"none"} c={"black"} tt={"capitalize"} opacity={0.7}>
-              home
-            </Text>
-          </Link>
+        </NavLink>
 
-          <Link to={"/signin"} style={{ textDecoration: "none" }}>
-            <Text td={"none"} c={"black"} tt={"capitalize"} opacity={0.7}>
-              login
-            </Text>
-          </Link>
+        {user ? (
+          <>
+            <NavLink
+              to="/organisation"
+              className={({ isActive }) =>
+                isActive ? styles.active : styles["not-active"]
+              }
+              style={{ textDecoration: "none" }}
+            >
+              <Text td={"none"} c={"black"} tt={"capitalize"} size={"xl"}>
+                Organisation
+              </Text>
+            </NavLink>
 
-          <Link to={"/signup"} style={{ textDecoration: "none" }}>
-            <Text td={"none"} c={"black"} tt={"capitalize"} opacity={0.7}>
-              signup
-            </Text>
-          </Link>
+            <NavLink
+              to="/profile"
+              className={({ isActive }) =>
+                isActive ? styles.active : styles["not-active"]
+              }
+              style={{ textDecoration: "none" }}
+            >
+              <Text td={"none"} c={"black"} tt={"capitalize"} size={"xl"}>
+                Player
+              </Text>
+            </NavLink>
 
-          <Link to={"/about"} style={{ textDecoration: "none" }}>
-            <Text td={"none"} c={"black"} tt={"capitalize"} opacity={0.7}>
-              about
-            </Text>
-          </Link>
-        </Group>
-      )}
+            <NavLink
+              to="/"
+              onClick={handleLogout}
+              style={{ textDecoration: "none" }}
+            >
+              <Text td={"none"} c={"black"} tt={"capitalize"} size={"xl"}>
+                Logout
+              </Text>
+            </NavLink>
+          </>
+        ) : (
+          <>
+            <NavLink
+              to="/signin"
+              className={({ isActive }) =>
+                isActive ? styles.active : styles["not-active"]
+              }
+              style={{ textDecoration: "none" }}
+            >
+              <Text td={"none"} c={"black"} tt={"capitalize"} size={"xl"}>
+                Login
+              </Text>
+            </NavLink>
+
+            <NavLink
+              to="/signup"
+              className={({ isActive }) =>
+                isActive ? styles.active : styles["not-active"]
+              }
+              style={{ textDecoration: "none" }}
+            >
+              <Text td={"none"} c={"black"} tt={"capitalize"} size={"xl"}>
+                Sign up
+              </Text>
+            </NavLink>
+          </>
+        )}
+      </Group>
     </Container>
   );
 };

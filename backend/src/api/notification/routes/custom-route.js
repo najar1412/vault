@@ -10,5 +10,13 @@ module.exports = {
         policies: [],
       },
     },
+    {
+      method: "POST",
+      path: "/notifications/confirm-deal",
+      handler: "notification.confirmDeal",
+      config: {
+        policies: [],
+      },
+    },
   ],
 };

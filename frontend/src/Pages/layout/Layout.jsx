@@ -31,6 +31,9 @@ import profileIcon from "../../assets/icons/face_24dp_000000_FILL0_wght400_GRAD0
 import orgIcon from "../../assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import plusIcon from "../../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import notificationIcon from "../../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import cartIcon from "../../assets/icons/shopping_cart_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import publicIcon from "../../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import marketIcon from "../../assets/icons/storefront_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 function Layout() {
   const {
@@ -42,7 +45,7 @@ function Layout() {
     customModal,
     setOwnerOrgs,
     setCustomModalContent,
-    setMemberOrgs,
+    setRelatedOrgs,
     memberOrgs,
     setNotifications,
     notifications,
@@ -52,11 +55,11 @@ function Layout() {
   const navigate = useNavigate();
   const [isLoading, setIsLoading] = useState(false);
 
-  const fetchMemberOrgs = async () => {
+  const fetchRelatedOrgs = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${API}/organisations?populate=vaults&filters[members][username][$eq]=${user.username}`,
+        `${API}/organisations?populate=vaults&filters[$or][0][members][username][$eq]=${user.username}&filters[$or][1][owners][username][$eq]=${user.username}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -66,7 +69,7 @@ function Layout() {
         }
       );
       const data = await response.json();
-      setMemberOrgs(data.data.length ? data.data : []);
+      setRelatedOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
       // message.error("Error while fetching profiles!");
@@ -101,7 +104,7 @@ function Layout() {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${API}/notifications?filters[receiverId][$eq]=${user.documentId}`,
+        `${API}/notifications?filters[$or][0][receiverId][$eq]=${user.documentId}&filters[$or][1][senderId][$eq]=${user.documentId}`,
         {
           headers: {
             "Content-Type": "application/json",
@@ -111,6 +114,8 @@ function Layout() {
         }
       );
       const data = await response.json();
+      console.log("((((((");
+      console.log(data.data);
       setNotifications(data.data ? data.data : []);
     } catch (error) {
       console.error(error);
@@ -123,7 +128,7 @@ function Layout() {
   const fetchOrgs = async () => {
     // setIsLoading(true);
     await fetchOwnerOrgs();
-    await fetchMemberOrgs();
+    await fetchRelatedOrgs();
     await fetchUser();
   };
 
@@ -202,18 +207,38 @@ function Layout() {
         }}
       >
         <Grid h={"100%"}>
-          <Grid.Col span={2}>
-            <Stack gap={"xl"} p={"md"}>
-              <>
-                <Group justify="space-between">
+          {user ? (
+            <Grid.Col span={user ? 2 : 0}>
+              <Stack gap={"xl"} p={"md"}>
+                {/* <Link to="/profile" style={{ textDecoration: "none" }}>
                   <Group>
                     <Avatar />
-                    <Text fw="500" tt={"capitalize"}>
-                      org tools
+                    <Text c={"black"} tt="capitalize">
+                      {user.username}
                     </Text>
                   </Group>
-                  <Text opacity={0.5}>v0.1</Text>
-                </Group>
+                </Link> */}
+
+                <NavLink
+                  to="/profile"
+                  /* className={({ isActive }) =>
+                    isActive ? styles.active : styles["not-active"]
+                  } */
+                  style={{ textDecoration: "none" }}
+                >
+                  <Group gap={"xs"} wrap="no-wrap">
+                    <Avatar />
+                    <Text
+                      td={"none"}
+                      size="1.25rem"
+                      c={"black"}
+                      tt={"capitalize"}
+                    >
+                      {user.username}
+                    </Text>
+                  </Group>
+                </NavLink>
+
                 {memberOrgs.length ? (
                   <Stack gap={"xs"} w="100%">
                     <Text tt="uppercase" opacity={0.5} size="xs" fw="500">
@@ -246,53 +271,83 @@ function Layout() {
                   <>
                     <Stack gap={"xs"}>
                       <Text tt="uppercase" opacity={0.5} size="xs" fw="400">
-                        general
+                        General
                       </Text>
 
                       <NavLink
-                        to="/organisation"
+                        to="/"
                         className={({ isActive }) =>
                           isActive ? styles.active : styles["not-active"]
                         }
                         style={{ textDecoration: "none" }}
                       >
                         <Group gap={"xs"} wrap="no-wrap">
-                          <Image src={orgIcon} />
+                          <Image src={marketIcon} />
                           <Text
+                            size="sm"
                             td={"none"}
                             c={"black"}
                             tt={"capitalize"}
                             fw={"500"}
                           >
-                            Organisation
+                            Market
                           </Text>
                         </Group>
                       </NavLink>
 
-                      <NavLink
-                        to="/reward-calculator"
-                        className={({ isActive }) =>
-                          isActive ? styles.active : styles["not-active"]
-                        }
-                        style={{ textDecoration: "none" }}
-                      >
-                        <Group gap={"xs"} wrap="no-wrap">
-                          <Image src={rewardIcon} />
-                          <Text
-                            td={"none"}
-                            c={"black"}
-                            tt={"capitalize"}
-                            fw={"500"}
-                          >
-                            rewards
-                          </Text>
-                        </Group>
-                      </NavLink>
+                      <Group>
+                        <NavLink
+                          to="/organisation"
+                          className={({ isActive }) =>
+                            isActive ? styles.active : styles["not-active"]
+                          }
+                          style={{ textDecoration: "none" }}
+                        >
+                          <Group gap={"xs"} wrap="no-wrap">
+                            <Image src={orgIcon} />
+                            <Text
+                              size="sm"
+                              td={"none"}
+                              c={"black"}
+                              tt={"capitalize"}
+                              fw={"500"}
+                            >
+                              Organisation
+                            </Text>
+                          </Group>
+                        </NavLink>
+                        {notifications && notifications.length ? (
+                          <Badge color="blue" p={0} px="0.5rem" py="0.8rem">
+                            <Text>{notifications.length}</Text>
+                          </Badge>
+                        ) : null}
+                      </Group>
+
+                      {/* <NavLink
+                      to="/reward-calculator"
+                      className={({ isActive }) =>
+                        isActive ? styles.active : styles["not-active"]
+                      }
+                      style={{ textDecoration: "none" }}
+                    >
+                      <Group gap={"xs"} wrap="no-wrap">
+                        <Image src={rewardIcon} />
+                        <Text
+                          size="sm"
+                          td={"none"}
+                          c={"black"}
+                          tt={"capitalize"}
+                          fw={"500"}
+                        >
+                          rewards
+                        </Text>
+                      </Group>
+                    </NavLink> */}
                     </Stack>
 
                     <Stack gap={"xs"}>
                       <Text tt="uppercase" opacity={0.5} size="xs" fw="400">
-                        Org vaults
+                        Organisation vaults
                       </Text>
                       {selectedOrg &&
                       selectedOrg.vaults &&
@@ -309,6 +364,7 @@ function Layout() {
                             <Group gap={"xs"} wrap="no-wrap">
                               <Image src={inventoryIcon} />
                               <Text
+                                size="sm"
                                 td={"none"}
                                 c={"black"}
                                 tt={"capitalize"}
@@ -320,7 +376,7 @@ function Layout() {
                           </NavLink>
                         ))
                       ) : (
-                        <Text>only owners can make org vaults</Text>
+                        <Text size="sm">only owners can make org vaults</Text>
                       )}
                     </Stack>
                   </>
@@ -332,34 +388,51 @@ function Layout() {
                     </Text>
                     {userVaults && userVaults.length ? (
                       userVaults.map((vault) => (
-                        <NavLink
-                          key={vault.name}
-                          to={`/vault/${vault.documentId}`}
-                          className={({ isActive }) =>
-                            isActive ? styles.active : styles["not-active"]
-                          }
-                          style={{ textDecoration: "none" }}
-                        >
-                          <Group gap={"xs"} wrap="no-wrap">
-                            <Image src={inventoryIcon} />
-                            <Text
-                              td={"none"}
-                              c={"black"}
-                              tt={"capitalize"}
-                              fw={"500"}
-                            >
-                              {vault.name}
-                            </Text>
-                          </Group>
-                        </NavLink>
+                        <Group key={vault.name}>
+                          <NavLink
+                            to={`/vault/${vault.documentId}`}
+                            className={({ isActive }) =>
+                              isActive ? styles.active : styles["not-active"]
+                            }
+                            style={{ textDecoration: "none" }}
+                          >
+                            <Group gap={"xs"} wrap="no-wrap">
+                              {vault.marketable ? (
+                                <Image src={cartIcon} />
+                              ) : (
+                                <Image src={inventoryIcon} />
+                              )}
+                              <Text
+                                size="sm"
+                                td={"none"}
+                                c={"black"}
+                                tt={"capitalize"}
+                                fw={"500"}
+                              >
+                                {vault.name}
+                              </Text>
+                            </Group>
+                          </NavLink>
+
+                          {vault.marketable ? (
+                            <Badge color="red" p={0} px="0.25rem" py="0.8rem">
+                              <Image
+                                src={publicIcon}
+                                width={"20rem"}
+                                height={"20rem"}
+                              />
+                            </Badge>
+                          ) : null}
+                        </Group>
                       ))
                     ) : (
                       <Button
+                        size="sm"
                         color="black"
                         fw="400"
                         leftSection={<Image src={plusIcon} />}
                         onClick={() =>
-                          setCustomModalContent("createPersonalVault")
+                          setCustomModalContent({ type: "createPersonalVault" })
                         }
                         w={"fit-content"}
                       >
@@ -372,55 +445,45 @@ function Layout() {
                     <Text tt="uppercase" opacity={0.5} size="xs" fw="400">
                       settings
                     </Text>
-
-                    <NavLink
-                      to="/notifications"
-                      className={({ isActive }) =>
-                        isActive ? styles.active : styles["not-active"]
-                      }
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Group gap={"xs"} wrap="no-wrap">
-                        <Image src={notificationIcon} />
-                        <Text
-                          td={"none"}
-                          c={"black"}
-                          tt={"capitalize"}
-                          fw={"500"}
-                        >
-                          notifications
-                        </Text>
-                        {notifications && notifications.length ? (
-                          <Badge>{notifications.length}</Badge>
-                        ) : null}
-                      </Group>
-                    </NavLink>
-
-                    <NavLink
-                      to="/profile"
-                      className={({ isActive }) =>
-                        isActive ? styles.active : styles["not-active"]
-                      }
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Group gap={"xs"} wrap="no-wrap">
-                        <Image src={profileIcon} />
-                        <Text
-                          td={"none"}
-                          c={"black"}
-                          tt={"capitalize"}
-                          fw={"500"}
-                        >
-                          profile
-                        </Text>
-                      </Group>
-                    </NavLink>
+                    <Group>
+                      <NavLink
+                        to="/notifications"
+                        className={({ isActive }) =>
+                          isActive ? styles.active : styles["not-active"]
+                        }
+                        style={{ textDecoration: "none" }}
+                      >
+                        <Group gap={"xs"} wrap="no-wrap">
+                          <Image src={notificationIcon} />
+                          <Text
+                            size="sm"
+                            td={"none"}
+                            c={"black"}
+                            tt={"capitalize"}
+                            fw={"500"}
+                          >
+                            notifications
+                          </Text>
+                        </Group>
+                      </NavLink>
+                      {notifications && notifications.length ? (
+                        <Badge color="blue" p={0} px="0.5rem" py="0.8rem">
+                          <Text>
+                            {
+                              notifications.filter((notif) => !notif.resolved)
+                                .length
+                            }
+                          </Text>
+                        </Badge>
+                      ) : null}
+                    </Group>
                   </Stack>
                 </>
-              </>
-            </Stack>
-          </Grid.Col>
-          <Grid.Col span={10}>
+              </Stack>
+            </Grid.Col>
+          ) : null}
+
+          <Grid.Col span={user ? 10 : 12}>
             <Container
               maw={"100%"}
               h={"fit-content"}

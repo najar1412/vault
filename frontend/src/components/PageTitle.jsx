@@ -1,12 +1,17 @@
-import { Stack, Text, Title } from "@mantine/core";
+import { Avatar, Group, Stack, Text, Title } from "@mantine/core";
 
-export const PageTitle = ({ title, description }) => {
+export const PageTitle = ({ title, description, icon }) => {
   return (
-    <Stack gap={0}>
-      <Title tt="capitalize" fw="500">
-        {title}
-      </Title>
-      <Text opacity={0.6}>{description}</Text>
-    </Stack>
+    <Group>
+      {icon ? icon : null}
+      <Stack gap={0}>
+        <Title size="3.5rem" tt="capitalize" fw="normal">
+          {title}
+        </Title>
+        <Text size="xl" opacity={0.6}>
+          {description}
+        </Text>
+      </Stack>
+    </Group>
   );
 };

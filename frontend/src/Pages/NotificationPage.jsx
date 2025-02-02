@@ -8,13 +8,15 @@ import {
   Title,
   Grid,
   Alert,
-  UnstyledButton,
+  Tabs,
+  Divider,
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 
 import { useAuthContext } from "../context/AuthContext";
 import { PageTitle } from "../components/PageTitle";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { NotificationCard } from "../components/NotificationCard";
 
 import { API } from "../constant";
 import { getToken } from "../helpers";
@@ -25,6 +27,7 @@ import vaultIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0
 import orgIcon from "../assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import notificationIcon from "../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import membersIcon from "../assets/icons/group_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import { VaultCard } from "../components/VaultCard";
 import { OrgCard } from "../components/OrgCard";
 
@@ -38,11 +41,11 @@ const NotificationPage = () => {
 
   const breadcrumbs = [
     {
-      label: "settings",
+      label: "player",
       link: "",
     },
     {
-      label: "profile",
+      label: "notifications",
       link: "",
     },
   ];
@@ -107,53 +110,109 @@ const NotificationPage = () => {
     const updatedNotif = await acceptOrgInvite(notifDocumentId);
     await addMemberToOrg(updatedNotif.data);
   };
-
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
-      <PageTitle
-        title={`notifications`}
-        description={"words, things and stuff"}
-      />
-      <Stack gap="xs">
+      <Stack gap="4rem">
+        <PageTitle
+          title={`notifications`}
+          description={"Manage all player notifications and messages"}
+        />
+        <Divider />
         <Stack>
-          {notifications.map((notif) => (
-            <>
-              <Alert
-                withCloseButton
-                key={notif.documentId}
-                variant="light"
-                color={notif.resolved ? "gray" : "blue"}
-                title={notif.type}
-                icon={orgIcon.src}
-              >
-                <Group>
-                  <Text>{notif.type}</Text>
-                  {!notif.resolved && (
-                    <>
-                      <Button
-                        color={notif.confirmationConfirmed ? "green" : "blue"}
-                        onClick={() =>
-                          notif.resolved
-                            ? null
-                            : handleAddMemberToOrg(notif.documentId)
-                        }
-                      >
-                        accept
-                      </Button>
-                      <Button>reject</Button>
-                    </>
-                  )}
-                </Group>
+          {notifications.length ? (
+            <Grid>
+              <Grid.Col span={6}>
+                <Stack>
+                  <Text>Recieved</Text>
+                </Stack>
 
-                <Group>
-                  <Text size="xs" opacity={0.5}>
-                    {notif.senderId} {">"} {notif.receiverId}
-                  </Text>
-                </Group>
-              </Alert>
-            </>
-          ))}
+                <Tabs defaultValue="rec-resolved">
+                  <Tabs.List>
+                    <Tabs.Tab value="rec-resolved">New</Tabs.Tab>
+                    <Tabs.Tab value="rec-unresolved">Resolved</Tabs.Tab>
+                  </Tabs.List>
+
+                  <Tabs.Panel value="rec-resolved">
+                    <Stack>
+                      {notifications
+                        .filter((notif) => notif.receiverId === user.documentId)
+                        .filter((notif) => !notif.resolved)
+                        .map((notif) => (
+                          <NotificationCard
+                            user={user}
+                            key={notif.documentId}
+                            notif={notif}
+                            isSender={false}
+                          />
+                        ))}
+                    </Stack>
+                  </Tabs.Panel>
+
+                  <Tabs.Panel value="rec-unresolved">
+                    <Stack>
+                      {notifications
+                        .filter((notif) => notif.receiverId === user.documentId)
+                        .filter((notif) => notif.resolved)
+                        .map((notif) => (
+                          <NotificationCard
+                            user={user}
+                            key={notif.documentId}
+                            notif={notif}
+                            isSender={false}
+                          />
+                        ))}
+                    </Stack>
+                  </Tabs.Panel>
+                </Tabs>
+              </Grid.Col>
+              <Grid.Col span={6}>
+                <Stack>
+                  <Text>Sent</Text>
+                </Stack>
+                <Tabs defaultValue="sent-resolved">
+                  <Tabs.List>
+                    <Tabs.Tab value="sent-resolved">New</Tabs.Tab>
+                    <Tabs.Tab value="sent-unresolved">Resolved</Tabs.Tab>
+                  </Tabs.List>
+
+                  <Tabs.Panel value="sent-resolved">
+                    <Stack>
+                      {notifications
+                        .filter((notif) => notif.senderId === user.documentId)
+                        .filter((notif) => !notif.resolved)
+                        .map((notif) => (
+                          <NotificationCard
+                            user={user}
+                            key={notif.documentId}
+                            notif={notif}
+                            isSender={true}
+                          />
+                        ))}
+                    </Stack>
+                  </Tabs.Panel>
+
+                  <Tabs.Panel value="sent-unresolved">
+                    <Stack>
+                      {notifications
+                        .filter((notif) => notif.senderId === user.documentId)
+                        .filter((notif) => notif.resolved)
+                        .map((notif) => (
+                          <NotificationCard
+                            user={user}
+                            key={notif.documentId}
+                            notif={notif}
+                            isSender={true}
+                          />
+                        ))}
+                    </Stack>
+                  </Tabs.Panel>
+                </Tabs>
+              </Grid.Col>
+            </Grid>
+          ) : (
+            <Text>No notifications</Text>
+          )}
         </Stack>
       </Stack>
     </>

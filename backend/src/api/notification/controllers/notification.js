@@ -45,5 +45,43 @@ module.exports = createCoreController(
 
       return null;
     },
+    async confirmDeal(ctx) {
+      const collect = {
+        type: ctx.request.body.data.type,
+        requiresConfirmation: true,
+        senderRelation: ctx.request.body.data.senderRelation,
+        senderId: ctx.request.body.data.senderId,
+        receiverRelation: ctx.request.body.data.receiverRelation,
+        receiverId: ctx.request.body.data.receiverId,
+        quantity: ctx.request.body.data.quantity,
+        reward: ctx.request.body.data.reward,
+        itemId: ctx.request.body.data.itemId,
+      };
+
+      // get user from vault
+      const receiverData = await strapi
+        .documents("plugin::users-permissions.user")
+        .findFirst({
+          filters: {
+            vaults: {
+              documentId: {
+                $eq: collect.receiverId,
+              },
+            },
+          },
+        });
+      collect.receiverRelation = "user";
+      collect.receiverId = receiverData.documentId;
+
+      // make notification
+      const newNotificaiton = await strapi.entityService.create(
+        "api::notification.notification",
+        {
+          data: collect,
+        }
+      );
+
+      return newNotificaiton;
+    },
   })
 );

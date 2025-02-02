@@ -25,6 +25,11 @@
       "type": "component",
       "repeatable": true,
       "component": "item-quantity.owned-item"
+    },
+    "marketable": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }
