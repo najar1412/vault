@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { Link, useNavigate } from "react-router";
-import { TextInput, Group, Button } from "@mantine/core";
+import { TextInput, Group, Button, Container } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 import { useAuthContext } from "../context/AuthContext";
@@ -60,12 +60,12 @@ const SignUpPage = () => {
   };
 
   return (
-    <>
+    <Container>
       <form onSubmit={form.onSubmit((values) => onFinish(values))}>
         <TextInput
           withAsterisk
-          label="Username"
-          placeholder="username"
+          label="Character name"
+          placeholder="Character name"
           key={form.key("username")}
           {...form.getInputProps("username")}
         />
@@ -88,11 +88,7 @@ const SignUpPage = () => {
           <Button type="submit">Submit</Button>
         </Group>
       </form>
-
-      <p>
-        Already have an account? <Link to="/signin">Sign In</Link>
-      </p>
-    </>
+    </Container>
   );
 };
 

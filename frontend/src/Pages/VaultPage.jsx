@@ -61,10 +61,6 @@ const VaultPage = () => {
       link: "",
     },
     {
-      label: "org vaults",
-      link: "",
-    },
-    {
       label: vault ? vault.data.name : "vault",
       link: "",
     },
@@ -231,33 +227,32 @@ const VaultPage = () => {
                   <Badge color="red" p={0}>
                     <Image src={publicIcon} width={"20rem"} height={"20rem"} />
                   </Badge>
-                ) : (
-                  null
-                )
+                ) : null
               }
               title={
-                vault.data.marketable
-                  ? `Vault is public and listed on the market.`
-                  : "Vault is private"
+                vault.data.marketable ? (
+                  <Text>Vault is public and listed on the market.</Text>
+                ) : (
+                  <Text>Vault is private</Text>
+                )
               }
             >
               <Stack gap={0}>
-                <Text fw="bold">
-                  {vault.data.marketable ? "Public" : "Private"}
+                <Text fw="400">
+                  {vault.data.marketable
+                    ? "Remove vault from the market?"
+                    : "Sell vault contents on the market?"}
                 </Text>
-                <Group>
-                  <Text>
-                    {vault.data.marketable
-                      ? "Make vault private?"
-                      : "Make vault public?"}
-                  </Text>
-                  <Button
-                    color={vault.data.marketable ? "red" : "blue"}
-                    onClick={() => console.log("clicked")}
-                  >
-                    {vault.data.marketable ? "make private" : "make public"}
-                  </Button>
-                </Group>
+                <Button
+                fw={400}
+                  w="fit-content"
+                  color={vault.data.marketable ? "red" : "blue"}
+                  onClick={() => console.log("clicked")}
+                >
+                  {vault.data.marketable
+                    ? "Yes, remove my vault from the Market!"
+                    : "Yes, put my vault on the Market!"}
+                </Button>
               </Stack>
             </Alert>
           </Grid.Col>

@@ -15,6 +15,7 @@ import Layout from "./Pages/layout/Layout.jsx";
 import VaultPage from "./Pages/VaultPage.jsx";
 import RewardCalculatorPage from "./Pages/RewardCalculatorPage.jsx";
 import OrganisationPage from "./Pages/OrganisationPage.jsx";
+import RoadmapPage from "./Pages/RoadmapPage.jsx";
 
 import AuthProvider from "./components/AuthProvider/AuthProvider.jsx";
 import { getToken } from "./helpers";
@@ -33,8 +34,7 @@ createRoot(document.getElementById("root")).render(
         <HashRouter>
           <Routes>
             <Route path="/" element={<Root />}>
-              {/* <Route index element={<HomePage />} /> */}
-              <Route path="about" element={<AboutPage />} />
+              <Route path="roadmap" element={<RoadmapPage />} />
               <Route path="signin" element={<SignInPage />} />
               <Route path="signup" element={<SignUpPage />} />
               <Route path="/" element={<Layout />}>

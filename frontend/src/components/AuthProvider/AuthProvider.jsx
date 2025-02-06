@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
 
 import { API, BEARER } from "../../constant";
-import { getToken } from "../../helpers";
+import { getToken, removeToken } from "../../helpers";
 
 const AuthProvider = ({ children }) => {
   const [userData, setUserData] = useState();
@@ -31,6 +31,11 @@ const AuthProvider = ({ children }) => {
     setUserData(user);
   };
 
+  const logoutUser = () => {
+    setUserData(undefined);
+    removeToken();
+  };
+
   useEffect(() => {
     if (authToken) {
       fetchLoggedInUser(authToken);
@@ -39,7 +44,12 @@ const AuthProvider = ({ children }) => {
 
   return (
     <AuthContext.Provider
-      value={{ user: userData, setUser: handleUser, isLoading }}
+      value={{
+        user: userData,
+        setUser: handleUser,
+        isLoading,
+        logoutUser: logoutUser,
+      }}
     >
       {children}
     </AuthContext.Provider>

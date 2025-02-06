@@ -67,11 +67,11 @@ const ProfilePage = () => {
         <Stack>
           <Group>
             <Image src={orgIcon} width={40} height={40} />
-            <Title fw={500} tt="capitalize">
+            <Title order={2} fw={300} tt="capitalize">
               my organisations
             </Title>
           </Group>
-          <Text size="xl" opacity={0.6}>
+          <Text opacity={0.6} fw="400">
             Organisation association
           </Text>
         </Stack>
@@ -116,15 +116,14 @@ const ProfilePage = () => {
           </Grid.Col>
         </Grid>
         <Divider />
-
         <Stack>
           <Group>
             <Image src={vaultIcon} width={40} height={40} />
-            <Title fw={500} tt="capitalize">
+            <Title order={2} fw={300} tt="capitalize">
               my personal vaults
             </Title>
           </Group>
-          <Text size="xl" opacity={0.6}>
+          <Text opacity={0.6} fw="400">
             Management of players personal vaults.
           </Text>
         </Stack>

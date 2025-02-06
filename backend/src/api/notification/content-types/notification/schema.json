@@ -55,6 +55,11 @@
     },
     "quantity": {
       "type": "string"
+    },
+    "terminated": {
+      "type": "boolean",
+      "default": false,
+      "required": true
     }
   }
 }

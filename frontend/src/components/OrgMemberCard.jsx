@@ -7,8 +7,7 @@ import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_o
 import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import profileIcon from "../assets/icons/face_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
-
-export const OrgMemberCard = ({ member }) => {
+export const OrgMemberCard = ({ member, orgId }) => {
   /* const { setUserVaults, userVaults, selectedOrg, setSelectedOrg } =
     useSiteStore(); */
   const [isLoading, setIsLoading] = useState(false);
@@ -17,26 +16,27 @@ export const OrgMemberCard = ({ member }) => {
     // delete owner from organ
     //await fetchDeleteOrg();
   };
-  const fetchDeleteOrg = async () => {
-    setIsLoading(true);
+  const removeMemberFromOrg = async (member, orgId) => {
     try {
-      const response = await fetch(`${API}/organisations/members/${member.documentId}`, {
-        method: "DELETE",
+      const response = await fetch(`${API}/organisations/${orgId}`, {
+        method: "PUT",
         headers: {
           "Content-Type": "application/json",
           // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
+        body: JSON.stringify({
+          data: {
+            members: { disconnect: [member.documentId] },
+          },
+        }),
       });
-
-      return response;
-      // setOwners(data.data.owners.length ? data.data.owners : false);
-      // setMembers(data.data.members.length ? data.data.members : false);
+      const tData = await response.json();
+      return tData;
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
-      setIsLoading(false);
+      // setIsLoading(false);
     }
   };
 
@@ -51,31 +51,25 @@ export const OrgMemberCard = ({ member }) => {
         filter: "drop-shadow(0px 0px 2px rgb(230, 230, 230))",
       }}
     >
-
-
       <Group gap={"0rem"}>
-              <Avatar radius="0" size="md">
-                <Image src={profileIcon} />
-              </Avatar>
-              <Group gap={"5rem"} px={12}>
-              <Text tt="capitalize" c="black">
-                    {member.username}
-                  </Text>
-      
-                <Group>
-                  <UnstyledButton>
-                    <Image src={editIcon} />
-                  </UnstyledButton>
-                  <UnstyledButton onClick={() => handleDeleteVault()}>
-                    <Image src={deleteIcon} />
-                  </UnstyledButton>
-                </Group>
-              </Group>
-            </Group>
+        <Avatar radius="0" size="md">
+          <Image src={profileIcon} />
+        </Avatar>
+        <Group gap={"5rem"} px={12}>
+          <Text tt="capitalize" c="black">
+            {member.username}
+          </Text>
 
-
-
-
+          <Group>
+            <UnstyledButton>
+              <Image src={editIcon} />
+            </UnstyledButton>
+            <UnstyledButton onClick={() => removeMemberFromOrg(member, orgId)}>
+              <Image src={deleteIcon} />
+            </UnstyledButton>
+          </Group>
+        </Group>
+      </Group>
     </Box>
   );
 };

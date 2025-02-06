@@ -15,22 +15,25 @@ import {
 } from "@mantine/core";
 import { useNavigate } from "react-router";
 
-import { useSiteStore } from "../Store";
-import { API } from "../constant";
-import { getToken } from "../helpers";
-import { Breadcrumbs } from "../components/Breadcrumbs";
-import { PageTitle } from "../components/PageTitle";
-import { VaultCard } from "../components/VaultCard";
+import { useSiteStore } from "@/Store";
+import { useAuthContext } from "@/context/AuthContext";
+import { API } from "@/constant";
+import { getToken } from "@/helpers";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTitle } from "@/components/PageTitle";
+import { VaultCard } from "@/components/VaultCard";
 
-import vaultIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import membersIcon from "../assets/icons/group_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import notificationIcon from "../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import vaultIcon from "@/assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import membersIcon from "@/assets/icons/group_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import plusIcon from "@/assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import messageIcon from "@/assets/icons/mail_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
 
-import { OrgOwnerCard } from "../components/OrgOwnerCard";
-import { OrgMemberCard } from "../components/OrgMemberCard";
+import { OrgOwnerCard } from "@/components/OrgOwnerCard";
+import { OrgMemberCard } from "@/components/OrgMemberCard";
+import { NotificationCard } from "@/components/NotificationCard";
 
 const OrganisationPage = () => {
+  const { user } = useAuthContext();
   const { selectedOrg, setCustomModalContent } = useSiteStore();
   const [orgNotifications, setOrgNotifications] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
@@ -120,12 +123,12 @@ const OrganisationPage = () => {
         <Divider />
         <Stack>
           <Group>
-            <Image src={notificationIcon} width={40} height={40} />
-            <Title order={2} fw={500} tt="capitalize">
-              Notifications
+            <Image src={messageIcon} width={40} height={40} />
+            <Title order={2} fw={300} tt="capitalize">
+              Messages
             </Title>
           </Group>
-          <Text size="xl" opacity={0.6}>
+          <Text opacity={0.6} fw="400">
             Notifications and message activity for this organisation.
           </Text>
         </Stack>
@@ -134,7 +137,15 @@ const OrganisationPage = () => {
           <Grid>
             <Grid.Col span={6}>
               <Stack>
-                <Text>Recieved</Text>
+                <Text>
+                  Recieved (
+                  {
+                    orgNotifications.filter(
+                      (notif) => notif.receiverId === selectedOrg.documentId
+                    ).length
+                  }
+                  )
+                </Text>
               </Stack>
 
               <Tabs defaultValue="rec-resolved">
@@ -210,7 +221,15 @@ const OrganisationPage = () => {
             </Grid.Col>
             <Grid.Col span={6}>
               <Stack>
-                <Text>Sent</Text>
+                <Text>
+                  Sent (
+                  {
+                    orgNotifications.filter(
+                      (notif) => notif.senderId === selectedOrg.documentId
+                    ).length
+                  }
+                  )
+                </Text>
               </Stack>
               <Tabs defaultValue="sent-resolved">
                 <Tabs.List>
@@ -225,28 +244,18 @@ const OrganisationPage = () => {
                     )
                     .filter((notif) => !notif.resolved)
                     .map((notif) => (
-                      <Alert
-                        withCloseButton
-                        key={notif.documentId}
-                        variant="light"
-                        color={notif.resolved ? "gray" : "blue"}
-                        title={notif.type}
-                        icon={membersIcon.src}
-                      >
-                        {notif.resolved ? null : (
-                          <Group>
-                            <Text>{notif.type}</Text>
-                            <Button>accept</Button>
-                            <Button>reject</Button>
-                          </Group>
-                        )}
-
-                        <Group>
-                          <Text size="xs" opacity={0.5}>
-                            {notif.senderId} {">"} {notif.receiverId}
-                          </Text>
-                        </Group>
-                      </Alert>
+                      <>
+                        <NotificationCard
+                          user={user}
+                          key={notif.documentId}
+                          notif={notif}
+                          isSender={
+                            notif.senderId === selectedOrg.documentId
+                              ? true
+                              : false
+                          }
+                        />
+                      </>
                     ))}
                 </Tabs.Panel>
 
@@ -257,46 +266,34 @@ const OrganisationPage = () => {
                     )
                     .filter((notif) => notif.resolved)
                     .map((notif) => (
-                      <Alert
-                        withCloseButton
+                      <NotificationCard
+                        user={user}
                         key={notif.documentId}
-                        variant="light"
-                        color={notif.resolved ? "gray" : "blue"}
-                        title={notif.type}
-                        icon={membersIcon.src}
-                      >
-                        {notif.resolved ? null : (
-                          <Group>
-                            <Text>{notif.type}</Text>
-                            <Button>accept</Button>
-                            <Button>reject</Button>
-                          </Group>
-                        )}
-
-                        <Group>
-                          <Text size="xs" opacity={0.5}>
-                            {notif.senderId} {">"} {notif.receiverId}
-                          </Text>
-                        </Group>
-                      </Alert>
+                        notif={notif}
+                        isSender={
+                          notif.senderId === selectedOrg.documentId
+                            ? true
+                            : false
+                        }
+                      />
                     ))}
                 </Tabs.Panel>
               </Tabs>
             </Grid.Col>
           </Grid>
         ) : (
-          <Text opacity={0.5}>No notifications</Text>
+          <Text opacity={0.5}>No messages</Text>
         )}
         <Divider />
 
         <Stack>
           <Group>
             <Image src={membersIcon} width={40} height={40} />
-            <Title fw={500} tt="capitalize">
+            <Title order={2} fw={300} tt="capitalize">
               Members
             </Title>
           </Group>
-          <Text size="xl" opacity={0.6}>
+          <Text opacity={0.6} fw="400">
             Manage this organisations members.
           </Text>
         </Stack>
@@ -346,7 +343,11 @@ const OrganisationPage = () => {
                   {selectedOrg && selectedOrg.members ? (
                     <Stack gap={0}>
                       {selectedOrg.members.map((member) => (
-                        <OrgMemberCard key={member.username} member={member} />
+                        <OrgMemberCard
+                          key={member.username}
+                          member={member}
+                          orgId={selectedOrg.documentId}
+                        />
                       ))}
                     </Stack>
                   ) : (
@@ -363,11 +364,11 @@ const OrganisationPage = () => {
         <Stack>
           <Group>
             <Image src={vaultIcon} width={40} height={40} />
-            <Title fw={500} tt="capitalize">
+            <Title order={2} fw={300} tt="capitalize">
               org vaults
             </Title>
           </Group>
-          <Text size="xl" opacity={0.6}>
+          <Text opacity={0.6} fw="400">
             Manage this organisations vaults
           </Text>
         </Stack>

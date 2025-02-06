@@ -45,7 +45,7 @@ const NotificationPage = () => {
       link: "",
     },
     {
-      label: "notifications",
+      label: "messages",
       link: "",
     },
   ];
@@ -115,7 +115,7 @@ const NotificationPage = () => {
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Stack gap="4rem">
         <PageTitle
-          title={`notifications`}
+          title={`messages`}
           description={"Manage all player notifications and messages"}
         />
         <Divider />
@@ -124,16 +124,24 @@ const NotificationPage = () => {
             <Grid>
               <Grid.Col span={6}>
                 <Stack>
-                  <Text>Recieved</Text>
+                  <Text>
+                    Recieved (
+                    {
+                      notifications.filter(
+                        (notif) => notif.receiverId === user.documentId
+                      ).length
+                    }
+                    )
+                  </Text>
                 </Stack>
 
-                <Tabs defaultValue="rec-resolved">
+                <Tabs defaultValue="rec-unresolved">
                   <Tabs.List>
-                    <Tabs.Tab value="rec-resolved">New</Tabs.Tab>
-                    <Tabs.Tab value="rec-unresolved">Resolved</Tabs.Tab>
+                    <Tabs.Tab value="rec-unresolved">New</Tabs.Tab>
+                    <Tabs.Tab value="rec-resolved">Resolved</Tabs.Tab>
                   </Tabs.List>
 
-                  <Tabs.Panel value="rec-resolved">
+                  <Tabs.Panel value="rec-unresolved">
                     <Stack>
                       {notifications
                         .filter((notif) => notif.receiverId === user.documentId)
@@ -149,7 +157,7 @@ const NotificationPage = () => {
                     </Stack>
                   </Tabs.Panel>
 
-                  <Tabs.Panel value="rec-unresolved">
+                  <Tabs.Panel value="rec-resolved">
                     <Stack>
                       {notifications
                         .filter((notif) => notif.receiverId === user.documentId)
@@ -168,7 +176,11 @@ const NotificationPage = () => {
               </Grid.Col>
               <Grid.Col span={6}>
                 <Stack>
-                  <Text>Sent</Text>
+                  <Text>Sent {
+                      notifications.filter(
+                        (notif) => notif.senderId === user.documentId
+                      ).length
+                    }</Text>
                 </Stack>
                 <Tabs defaultValue="sent-resolved">
                   <Tabs.List>
@@ -211,7 +223,7 @@ const NotificationPage = () => {
               </Grid.Col>
             </Grid>
           ) : (
-            <Text>No notifications</Text>
+            <Text>No messages</Text>
           )}
         </Stack>
       </Stack>

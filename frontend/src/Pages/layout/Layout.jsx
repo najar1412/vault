@@ -34,6 +34,7 @@ import notificationIcon from "../../assets/icons/notifications_24dp_000000_FILL0
 import cartIcon from "../../assets/icons/shopping_cart_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import publicIcon from "../../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import marketIcon from "../../assets/icons/storefront_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import messageIcon from "../../assets/icons/mail_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
 
 function Layout() {
   const {
@@ -317,8 +318,14 @@ function Layout() {
                           </Group>
                         </NavLink>
                         {notifications && notifications.length ? (
-                          <Badge color="blue" p={0} px="0.5rem" py="0.8rem">
-                            <Text>{notifications.length}</Text>
+                          <Badge
+                            size="xs"
+                            color="blue"
+                            p={0}
+                            px="0.25rem"
+                            py="0.45rem"
+                          >
+                            {notifications.length}
                           </Badge>
                         ) : null}
                       </Group>
@@ -376,7 +383,20 @@ function Layout() {
                           </NavLink>
                         ))
                       ) : (
-                        <Text size="sm">only owners can make org vaults</Text>
+                        <Button
+                          size="xs"
+                          color="black"
+                          fw="400"
+                          leftSection={<Image src={plusIcon} />}
+                          onClick={() =>
+                            setCustomModalContent({
+                              type: "createOrgVault",
+                            })
+                          }
+                          w={"fit-content"}
+                        >
+                          Create Vault
+                        </Button>
                       )}
                     </Stack>
                   </>
@@ -388,7 +408,7 @@ function Layout() {
                     </Text>
                     {userVaults && userVaults.length ? (
                       userVaults.map((vault) => (
-                        <Group key={vault.name}>
+                        <Group key={vault.name} wrap="'no-wrap">
                           <NavLink
                             to={`/vault/${vault.documentId}`}
                             className={({ isActive }) =>
@@ -413,16 +433,6 @@ function Layout() {
                               </Text>
                             </Group>
                           </NavLink>
-
-                          {vault.marketable ? (
-                            <Badge color="red" p={0} px="0.25rem" py="0.8rem">
-                              <Image
-                                src={publicIcon}
-                                width={"20rem"}
-                                height={"20rem"}
-                              />
-                            </Badge>
-                          ) : null}
                         </Group>
                       ))
                     ) : (
@@ -454,7 +464,7 @@ function Layout() {
                         style={{ textDecoration: "none" }}
                       >
                         <Group gap={"xs"} wrap="no-wrap">
-                          <Image src={notificationIcon} />
+                          <Image src={messageIcon} />
                           <Text
                             size="sm"
                             td={"none"}
@@ -462,18 +472,22 @@ function Layout() {
                             tt={"capitalize"}
                             fw={"500"}
                           >
-                            notifications
+                            messages
                           </Text>
                         </Group>
                       </NavLink>
                       {notifications && notifications.length ? (
-                        <Badge color="blue" p={0} px="0.5rem" py="0.8rem">
-                          <Text>
-                            {
-                              notifications.filter((notif) => !notif.resolved)
-                                .length
-                            }
-                          </Text>
+                        <Badge
+                          size="xs"
+                          color="blue"
+                          p={0}
+                          px="0.25rem"
+                          py="0.45rem"
+                        >
+                          {
+                            notifications.filter((notif) => !notif.resolved)
+                              .length
+                          }
                         </Badge>
                       ) : null}
                     </Group>

@@ -431,6 +431,9 @@ export interface ApiNotificationNotification
     reward: Schema.Attribute.String;
     senderId: Schema.Attribute.String;
     senderRelation: Schema.Attribute.String;
+    terminated: Schema.Attribute.Boolean &
+      Schema.Attribute.Required &
+      Schema.Attribute.DefaultTo<false>;
     type: Schema.Attribute.Enumeration<
       ['add-to-org-member', 'request-org-member-invite', 'confirm-deal']
     > &

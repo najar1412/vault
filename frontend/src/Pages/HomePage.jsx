@@ -30,10 +30,6 @@ function HomePage() {
 
   const breadcrumbs = [
     {
-      label: "player",
-      link: "",
-    },
-    {
       label: "market",
       link: "",
     },
@@ -166,23 +162,25 @@ function HomePage() {
                       <Group key={item.documentId}>
                         <Text>{item.item.name}</Text>
                         <Text>x{item.quantity}</Text>
-                        {
-                          user ? <Button
-                          color="black"
-                          fw="500"
-                          onClick={(e) =>
-                            handleItemBid({
-                              vaultId: vault.documentId,
-                              itemId: item.item.documentId,
-                              senderId: user.documentId,
-                              quantity: 0,
-                              reward: 0,
-                            })
-                          }
-                        >
-                          bid
-                        </Button> : <Text opacity={0.5}>Join to buy items</Text>
-                        }
+                        {user ? (
+                          <Button
+                            color="black"
+                            fw="500"
+                            onClick={(e) =>
+                              handleItemBid({
+                                vaultId: vault.documentId,
+                                itemId: item.item.documentId,
+                                senderId: user.documentId,
+                                quantity: 0,
+                                reward: 0,
+                              })
+                            }
+                          >
+                            bid
+                          </Button>
+                        ) : (
+                          <Text opacity={0.5}>Join to buy items</Text>
+                        )}
                       </Group>
                     ))
                   : null

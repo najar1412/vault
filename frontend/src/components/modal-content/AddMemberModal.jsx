@@ -7,7 +7,7 @@ import { API } from "../../constant";
 import { getToken } from "../../helpers";
 import { useSiteStore } from "../../Store";
 
-export const AddMemberModal = (onSuccessHandler) => {
+export const AddMemberModal = () => {
   const [isLoading, setIsLoading] = useState(false);
   const { selectedOrg } = useSiteStore();
 
@@ -52,7 +52,7 @@ export const AddMemberModal = (onSuccessHandler) => {
 
   const handleSubmit = async (values) => {
     const memberInvite = await fetchSendMemberInvite(values);
-    onSuccessHandler(memberInvite);
+    // onSuccessHandler(memberInvite);
   };
   return (
     <>
