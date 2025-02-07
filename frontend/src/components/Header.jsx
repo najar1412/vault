@@ -76,7 +76,7 @@ const Header = () => {
         </Group>
 
         <Group>
-          <NavLink
+          {/* <NavLink
             to="/roadmap"
             className={({ isActive }) =>
               isActive ? styles.active : styles["not-active"]
@@ -86,7 +86,7 @@ const Header = () => {
             <Text td={"none"} c={"black"} tt={"capitalize"} size={"md"}>
               roadmap
             </Text>
-          </NavLink>
+          </NavLink> */}
           {user ? (
             <NavLink
               to="/"

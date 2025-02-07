@@ -143,14 +143,6 @@ function HomePage() {
                 </Group>
               </Group>
             </form>
-            <Button
-              color="black"
-              fw="400"
-              leftSection={<Image src={plusIcon} />}
-              onClick={open}
-            >
-              Add Item
-            </Button>
           </Group>
         </Group>
 
