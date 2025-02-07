@@ -7,7 +7,13 @@ devDev1!
 
 ## prod
 
+cp `.env.example` `.env` and fill out
+
+build apps
+
 use `ecosystem.config.cjs` files for pm2 management on prod
+
+```pm2 start ecosystem.config.cjs```
 
 ## TODO
 
