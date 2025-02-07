@@ -10,6 +10,7 @@ import {
   Image,
   UnstyledButton,
 } from "@mantine/core";
+import { v4 as uuidv4 } from "uuid";
 
 import { ItemQuantity } from "./ItemQuantity";
 
@@ -19,7 +20,7 @@ import { getToken } from "../helpers";
 
 import sortIcon from "../assets/icons/sort_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
-const crypto = window.crypto;
+const crypto = () => uuidv4();
 
 const VaultTable = ({ columns, elements, deleteItem }) => {
   const [sortedColumn, setSortedColumn] = useState(columns[0]);
@@ -50,13 +51,13 @@ const VaultTable = ({ columns, elements, deleteItem }) => {
           );
         } else if (k === "note") {
           return (
-            <Table.Td key={crypto.randomUUID()}>
+            <Table.Td key={crypto()}>
               <TextInput />
             </Table.Td>
           );
         } else if (columns.includes(k)) {
           return (
-            <Table.Td key={crypto.randomUUID()}>
+            <Table.Td key={crypto()}>
               <Group gap="xs">
                 <Avatar size="sm" />
                 <Text size="sm">{element[k]}</Text>
