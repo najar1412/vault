@@ -27,8 +27,6 @@ export const useSiteStore = create((set, get) => ({
       },
     }),
   setCustomModalContent: (options) => {
-    console.log("setting custom content");
-    console.log(get().customModal);
     set({
       customModal: {
         ...get().customModal,

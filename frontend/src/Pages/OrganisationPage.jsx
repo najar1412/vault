@@ -50,7 +50,6 @@ const OrganisationPage = () => {
 
   const checkOwnership = async () => {
     // TODO: check ownership at the db level
-    console.log(selectedOrg);
     if (selectedOrg) {
       const isOwner = selectedOrg.owners.filter(
         (owner) => owner.documentId === user.documentId

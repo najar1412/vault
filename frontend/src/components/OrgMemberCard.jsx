@@ -56,7 +56,6 @@ export const OrgMemberCard = ({ cardIsOwner, userIsOwner, member, orgId }) => {
 
     const relatedOrgs = await fetchRelatedOrgs();
     setRelatedOrgs(relatedOrgs);
-    console.log(relatedOrgs);
 
     // redirects
     if (member.documentId === user.documentId) {

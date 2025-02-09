@@ -40,7 +40,7 @@ prepare for users
 - user flow
   - basic user feed back (mantine tool tips, not working etc)
   - clean up add member flow (updating ui, redirects mostly), remove member flow
-  - on leave/join org, refresh ui, redirect
+  - on leave org refresh ui, redirect
 - Vaults
   - allow editing of items in the table (quanity, note etc)
   - enable search of vault items

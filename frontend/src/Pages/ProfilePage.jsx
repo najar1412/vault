@@ -75,7 +75,11 @@ const ProfilePage = () => {
 
                 {ownerOrgs && ownerOrgs.length ? (
                   ownerOrgs.map((org) => (
-                    <OrgCard key={org.documentId} organisation={org} />
+                    <OrgCard
+                      key={org.documentId}
+                      cardIsOwner={true}
+                      organisation={org}
+                    />
                   ))
                 ) : (
                   <Text opacity={0.5}>No owned organisations</Text>

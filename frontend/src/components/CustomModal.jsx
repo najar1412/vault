@@ -1,6 +1,6 @@
 import { Modal } from "@mantine/core";
 
-import { useSiteStore } from "../Store";
+import { useSiteStore } from "@/Store";
 
 import { DefaultModal } from "./modal-content/DefaultModal";
 import { CreateOrgModal } from "./modal-content/CreateOrgModal";
@@ -21,8 +21,6 @@ const MODALCONTENT = {
 };
 
 const ModalSelector = (template, data) => {
-  console.log(template);
-  console.log(data);
   return MODALCONTENT[template.template](data);
 };
 

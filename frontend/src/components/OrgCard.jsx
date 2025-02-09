@@ -4,41 +4,90 @@ import { Link } from "react-router";
 import { API } from "../constant";
 import { getToken } from "../helpers";
 import { useSiteStore } from "../Store";
+import { useAuthContext } from "../context/AuthContext";
 
-import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import leaveIcon from "../assets/icons/logout_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import groupIcon from "../assets/icons/groups_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
-export const OrgCard = ({ organisation }) => {
-  const { setSelectedOrg, setIsLoading } = useSiteStore();
+export const OrgCard = ({ cardIsOwner, organisation }) => {
+  const { user } = useAuthContext();
+  const { setSelectedOrg, setIsLoading, setRelatedOrgs } = useSiteStore();
 
-  const handleLeaveOrg = async () => {
-    console.log("handleLeaveOrg");
-    // delete owner from organ
-    //await fetchLeaveOrg();
-  };
-
-  const fetchLeaveOrg = async () => {
+  const fetchRelatedOrgs = async () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${API}/organisations/owners${organisation.documentId}`,
+        `${API}/organisations?populate=vaults&filters[$or][0][members][username][$eq]=${user.username}&filters[$or][1][owners][username][$eq]=${user.username}`,
         {
-          method: "DELETE",
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
       );
-
-      return response;
-      // setOwners(data.data.owners.length ? data.data.owners : false);
-      // setMembers(data.data.members.length ? data.data.members : false);
+      const data = await response.json();
+      return data.data.length ? data.data : [];
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleRemoveMember = async (member, orgId) => {
+    if (cardIsOwner) {
+      await fetchOwnerFromOrg(member, orgId);
+    } else {
+      await fetchRemoveMemberFromOrg(member, orgId);
+    }
+
+    const relatedOrgs = await fetchRelatedOrgs();
+    setRelatedOrgs(relatedOrgs);
+  };
+
+  const fetchRemoveMemberFromOrg = async (member, orgId) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API}/organisations/${orgId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          data: {
+            members: { disconnect: [member.documentId] },
+          },
+        }),
+      });
+      const tData = await response.json();
+      return tData;
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const fetchOwnerFromOrg = async (member, orgId) => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(`${API}/organisations/${orgId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          data: {
+            owners: { disconnect: [member.documentId] },
+          },
+        }),
+      });
+      const tData = await response.json();
+      return tData;
+    } catch (error) {
+      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -71,10 +120,9 @@ export const OrgCard = ({ organisation }) => {
           </Link>
 
           <Group>
-            <UnstyledButton>
-              <Image src={editIcon} />
-            </UnstyledButton>
-            <UnstyledButton onClick={() => handleLeaveOrg()}>
+            <UnstyledButton
+              onClick={() => handleRemoveMember(user, organisation.documentId)}
+            >
               <Image src={leaveIcon} />
             </UnstyledButton>
           </Group>

@@ -43,7 +43,6 @@ export const BidItemModal = () => {
         }),
       });
       const tData = await response.json();
-      console.log(tData);
       return tData;
     } catch (error) {
       console.error(error);
