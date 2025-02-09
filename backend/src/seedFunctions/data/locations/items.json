@@ -1,0 +1,126 @@
+[
+  {
+    "name": "PYAM Security Keycard",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-01 Executive Access Protocols Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-02 Security Encryption Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-03 Vehicle Management Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-04 Power Processing Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-05 Orbital Positioning Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-06 Communication Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+  {
+    "name": "DCHS-07 Engineering Maintenance Comp-Board",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "general",
+    "category": null
+  },
+
+  {
+    "name": "snowpack",
+    "size": 2,
+    "grade": "a",
+    "class": "industrial",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "durango",
+    "size": 3,
+    "grade": "a",
+    "class": "industrial",
+    "type": "ship_component",
+    "category": "power_plant"
+  },
+  {
+    "name": "agni",
+    "size": 3,
+    "grade": "b",
+    "class": "industrial",
+    "type": "ship_component",
+    "category": "quantum_drive"
+  },
+  {
+    "name": "FR-66",
+    "size": 1,
+    "grade": "a",
+    "class": "military",
+    "type": "ship_component",
+    "category": "shield"
+  },
+
+  {
+    "name": "'WEAK' Repeater",
+    "size": 1,
+    "grade": "a",
+    "class": null,
+    "type": "ship_weapon",
+    "category": "ballistic_cannon"
+  },
+
+  {
+    "name": "Custodian 'Midnight' SMG",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "fps_weapon",
+    "category": "energy"
+  },
+
+  {
+    "name": "Lync Core Yellow",
+    "size": null,
+    "grade": null,
+    "class": null,
+    "type": "fps_armor",
+    "category": "light_armor"
+  }
+]

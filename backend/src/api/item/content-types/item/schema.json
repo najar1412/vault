@@ -4,7 +4,8 @@
   "info": {
     "singularName": "item",
     "pluralName": "items",
-    "displayName": "Item"
+    "displayName": "Item",
+    "description": ""
   },
   "options": {
     "draftAndPublish": false
@@ -12,6 +13,30 @@
   "pluginOptions": {},
   "attributes": {
     "name": {
+      "type": "string"
+    },
+    "size": {
+      "type": "integer"
+    },
+    "grade": {
+      "type": "string"
+    },
+    "class": {
+      "type": "string"
+    },
+    "type": {
+      "type": "enumeration",
+      "enum": [
+        "general",
+        "ship_component",
+        "ship_weapon",
+        "fps_weapon",
+        "fps_armor"
+      ],
+      "default": "general",
+      "required": true
+    },
+    "category": {
       "type": "string"
     }
   }
