@@ -1,13 +1,12 @@
 import { Group, Text, UnstyledButton, Image, Box, Avatar } from "@mantine/core";
 import { Link } from "react-router";
 
-import { useSiteStore } from "../Store";
-import { API } from "../constant";
-import { getToken } from "../helpers";
+import { useSiteStore } from "@/Store";
+import { API } from "@/constant";
+import { getToken } from "@/helpers";
 
-import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import inventoryIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import deleteIcon from "@/assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import inventoryIcon from "@/assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 export const VaultCard = ({ vault, isPersonalVault }) => {
   const {
@@ -95,9 +94,6 @@ export const VaultCard = ({ vault, isPersonalVault }) => {
           </Link>
 
           <Group>
-            <UnstyledButton>
-              <Image src={editIcon} />
-            </UnstyledButton>
             <UnstyledButton onClick={() => handleDeleteVault()}>
               <Image src={deleteIcon} />
             </UnstyledButton>

@@ -262,7 +262,7 @@ function Layout() {
                         </Group>
                       </NavLink>
 
-                      <Group>
+                      <Group wrap="no-wrap">
                         <NavLink
                           to="/organisation"
                           className={({ isActive }) =>

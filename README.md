@@ -9,15 +9,15 @@ devDev1!
 
 #### backend:
 
-1. fill out config
+1) fill out config
 
 cp `.env.example` `.env` and fill out
 
-2. set `url` for admin panel (comment out for dev)
+2) set `url` for admin panel (comment out for dev)
 
 `/backend/config/server.js`
 
-3. build app
+3) build app
 
 use `ecosystem.config.cjs` files for pm2 management on prod
 
@@ -25,9 +25,9 @@ use `ecosystem.config.cjs` files for pm2 management on prod
 
 #### frontend:
 
-1. build app
+1) build app
 
-`npm run build`
+```npm run build```
 
 use `ecosystem.config.cjs` files for pm2 management on prod
 

@@ -9,18 +9,20 @@ import {
   Divider,
   Avatar,
   Image,
+  Alert,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-import { Breadcrumbs } from "../components/Breadcrumbs";
-import { PageTitle } from "../components/PageTitle";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTitle } from "@/components/PageTitle";
 
-import { API } from "../constant";
-import { useSiteStore } from "../Store";
-import { useAuthContext } from "../context/AuthContext";
+import { API } from "@/constant";
+import { useSiteStore } from "@/Store";
+import { useAuthContext } from "@/context/AuthContext";
 
-import filterIcon from "../assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import searchIcon from "../assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import filterIcon from "@/assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import searchIcon from "@/assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import bugIcon from "@/assets/icons/bug_report_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 function HomePage() {
   const [organisations, setOrganisations] = useState(false);
@@ -90,11 +92,21 @@ function HomePage() {
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
       <Stack gap="4rem">
-        <PageTitle
-          title={"market"}
-          description={"Search the market"}
-          icon={<Avatar size="xl" radius={0} />}
-        />
+        <Stack gap={"xs"}>
+          <PageTitle
+            title={"market"}
+            description={"Search the market"}
+            icon={<Avatar size="xl" radius={0} />}
+          />
+          <Alert
+            variant="light"
+            color="red"
+            title="Imp"
+            icon={<Image src={bugIcon} w={20} h={20} />}
+          >
+            Nothing to see here, move along.
+          </Alert>
+        </Stack>
         <Divider />
         <Group justify="space-between">
           <Text fw="500" tt="capitalize">

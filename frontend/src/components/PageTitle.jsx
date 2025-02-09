@@ -1,4 +1,4 @@
-import { Avatar, Group, Stack, Text, Title } from "@mantine/core";
+import { Group, Stack, Text, Title } from "@mantine/core";
 
 export const PageTitle = ({ title, description, icon }) => {
   return (
