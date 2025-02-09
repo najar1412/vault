@@ -1,14 +1,18 @@
+import { useNavigate } from "react-router";
 import { Alert, Group, Button, Text, Stack } from "@mantine/core";
 
 import { ConfirmDeal } from "./notification-templates/ConfirmDeal";
 import { CancelOrgInvite } from "./notification-templates/CancelOrgInvite";
 
-import { useSiteStore } from "../Store";
-import { getToken } from "../helpers";
-import { API } from "../constant";
+import { useAuthContext } from "../context/AuthContext";
+import { useSiteStore } from "@/Store";
+import { getToken } from "@/helpers";
+import { API } from "@/constant";
 
 export const NotificationCard = ({ notif, isSender }) => {
-  const { setIsLoading } = useSiteStore();
+  const { user } = useAuthContext();
+  const navigate = useNavigate();
+  const { setIsLoading, setRelatedOrgs } = useSiteStore();
   const HandleTemplateSelect = ({ notif }) => {
     if (notif.type === "confirm-deal") {
       return <ConfirmDeal isSender={isSender} notif={notif} />;
@@ -91,9 +95,33 @@ export const NotificationCard = ({ notif, isSender }) => {
     }
   };
 
+  const fetchRelatedOrgs = async () => {
+    setIsLoading(true);
+    try {
+      const response = await fetch(
+        `${API}/organisations?populate=vaults&filters[$or][0][members][username][$eq]=${user.username}&filters[$or][1][owners][username][$eq]=${user.username}`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      const data = await response.json();
+      return data.data.length ? data.data : [];
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   const handleAcceptOrgInvite = async (notif) => {
     await updateNotification(notif.documentId);
     await addMemberToOrg(notif);
+    const relatedOrgs = await fetchRelatedOrgs();
+    setRelatedOrgs(relatedOrgs);
+    navigate("/organisation", { replace: true });
   };
 
   return (

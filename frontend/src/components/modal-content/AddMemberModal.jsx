@@ -1,12 +1,14 @@
 import { Button, Stack, Group, TextInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import { useNavigate } from "react-router";
 
 import { API } from "../../constant";
 import { getToken } from "../../helpers";
 import { useSiteStore } from "../../Store";
 
 export const AddMemberModal = () => {
-  const { selectedOrg, setIsLoading } = useSiteStore();
+  const navigate = useNavigate();
+  const { selectedOrg, setIsLoading, customModal } = useSiteStore();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -50,6 +52,8 @@ export const AddMemberModal = () => {
 
   const handleSubmit = async (values) => {
     await fetchSendMemberInvite(values);
+    customModal.close();
+    navigate("/organisation", { replace: true });
   };
   return (
     <>

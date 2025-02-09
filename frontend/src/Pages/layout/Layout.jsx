@@ -382,7 +382,7 @@ function Layout() {
                       ))
                     ) : (
                       <Button
-                        size="sm"
+                        size="xs"
                         color="black"
                         fw="400"
                         leftSection={<Image src={plusIcon} />}

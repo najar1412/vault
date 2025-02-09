@@ -5,8 +5,6 @@ import { Container, Group, Text, Avatar, Divider } from "@mantine/core";
 import { useAuthContext } from "../context/AuthContext";
 import { useSiteStore } from "../Store";
 
-import { removeToken } from "../helpers";
-
 import styles from "./Header.module.css";
 
 const Header = () => {

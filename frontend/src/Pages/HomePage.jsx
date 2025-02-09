@@ -86,6 +86,7 @@ function HomePage() {
       );
       const data = await response.json();
 
+      console.log(data.data)
       setVaults(data.data ? data.data : []);
     } catch (error) {
       console.error(error);
@@ -191,10 +192,13 @@ function HomePage() {
                         <Group key={item.documentId}>
                           <Stack gap={0}>
                             <Group gap="xs">
-                              <Avatar
-                                src={ITEM_TYPES[item.item.type].icon}
-                                size="sm"
-                              />
+                              {item.item && item.item.type ? (
+                                <Avatar
+                                  src={ITEM_TYPES[item.item.type].icon}
+                                  size="sm"
+                                />
+                              ) : null}
+
                               <Stack gap={0}>
                                 <Group>
                                   <Text size="sm" fw={500}>
