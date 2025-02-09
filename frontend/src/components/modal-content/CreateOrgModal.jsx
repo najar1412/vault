@@ -1,6 +1,6 @@
 import { Modal, Group, TextInput, Button, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
-
+import { useNavigate } from "react-router";
 import { useSiteStore } from "@/Store";
 import { useAuthContext } from "@/context/AuthContext";
 
@@ -8,7 +8,8 @@ import { getToken } from "@/helpers";
 import { API } from "@/constant";
 
 export const CreateOrgModal = () => {
-  const { setIsLoading } = useSiteStore();
+  const navigate = useNavigate();
+  const { setIsLoading, customModal, setSelectedOrg } = useSiteStore();
   const { user } = useAuthContext();
 
   const form = useForm({
@@ -24,6 +25,8 @@ export const CreateOrgModal = () => {
 
   const handleSubmit = async (values) => {
     await createOrg(values);
+    navigate(`/organisation`, { replace: true });
+    customModal.close();
   };
 
   const createOrg = async (data) => {
@@ -44,6 +47,7 @@ export const CreateOrgModal = () => {
       });
 
       const tData = await response.json();
+      setSelectedOrg(tData.data);
       return tData;
     } catch (error) {
       console.error(error);

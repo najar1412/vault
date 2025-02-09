@@ -10,6 +10,7 @@ import {
   Avatar,
   Image,
   Alert,
+  Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
@@ -108,68 +109,99 @@ function HomePage() {
           </Alert>
         </Stack>
         <Divider />
-        <Group justify="space-between">
-          <Text fw="500" tt="capitalize">
-            All Items <span style={{ opacity: 0.6 }}>0</span>
-          </Text>
+        <Stack gap={"xs"}>
           <Group>
-            <form onSubmit={form.onSubmit((values) => console.log(values))}>
-              <Group justify="space-between">
-                <Group>
-                  <TextInput
-                    leftSectionPointerEvents="none"
-                    leftSection={<Image src={searchIcon} />}
-                    placeholder="Search"
-                    key={form.key("search")}
-                    {...form.getInputProps("search")}
-                  />
-                  <Button
-                    variant="outline"
-                    color="black"
-                    fw="400"
-                    /* type="submit" */
-                    leftSection={<Image src={filterIcon} />}
-                  >
-                    Filter
-                  </Button>
-                </Group>
-              </Group>
-            </form>
+            <Image src={bugIcon} width={40} height={40} />
+            <Title order={2} fw={300} tt="capitalize">
+              Trading Organisations
+            </Title>
           </Group>
-        </Group>
 
-        <Stack>
-          {vaults
-            ? vaults.map((vault) =>
-                vault.Items
-                  ? vault.Items.map((item) => (
-                      <Group key={item.documentId}>
-                        <Text>{item.item.name}</Text>
-                        <Text>x{item.quantity}</Text>
-                        {user ? (
-                          <Button
-                            color="black"
-                            fw="500"
-                            onClick={(e) =>
-                              handleItemBid({
-                                vaultId: vault.documentId,
-                                itemId: item.item.documentId,
-                                senderId: user.documentId,
-                                quantity: 0,
-                                reward: 0,
-                              })
-                            }
-                          >
-                            bid
-                          </Button>
-                        ) : (
-                          <Text opacity={0.5}>Join to buy items</Text>
-                        )}
-                      </Group>
-                    ))
-                  : null
-              )
-            : null}
+          <Group gap={"xs"}>
+            {organisations && organisations.length
+              ? organisations.map((org) => (
+                  <Group gap={0} key={org.documentId}>
+                    <Avatar size="sm" />
+                    <Text tt="capitalize" size="xs">
+                      {org.name},
+                    </Text>
+                  </Group>
+                ))
+              : null}
+          </Group>
+        </Stack>
+
+        <Divider />
+        <Stack gap={"xs"}>
+          <Group>
+            <Image src={bugIcon} width={40} height={40} />
+            <Title order={2} fw={300} tt="capitalize">
+              Market board
+            </Title>
+          </Group>
+          <Group justify="space-between">
+            <Text fw="500" tt="capitalize">
+              All Items <span style={{ opacity: 0.6 }}>0</span>
+            </Text>
+            <Group>
+              <form onSubmit={form.onSubmit((values) => console.log(values))}>
+                <Group justify="space-between">
+                  <Group>
+                    <TextInput
+                      leftSectionPointerEvents="none"
+                      leftSection={<Image src={searchIcon} />}
+                      placeholder="Search"
+                      key={form.key("search")}
+                      {...form.getInputProps("search")}
+                    />
+                    <Button
+                      variant="outline"
+                      color="black"
+                      fw="400"
+                      /* type="submit" */
+                      leftSection={<Image src={filterIcon} />}
+                    >
+                      Filter
+                    </Button>
+                  </Group>
+                </Group>
+              </form>
+            </Group>
+          </Group>
+
+          <Stack>
+            {vaults
+              ? vaults.map((vault) =>
+                  vault.Items
+                    ? vault.Items.map((item) => (
+                        <Group key={item.documentId}>
+                          <Text>{item.item.name}</Text>
+                          <Text>x{item.quantity}</Text>
+                          {user ? (
+                            <Button
+                              color="black"
+                              fw="500"
+                              onClick={(e) =>
+                                handleItemBid({
+                                  vaultId: vault.documentId,
+                                  itemId: item.item.documentId,
+                                  senderId: user.documentId,
+                                  quantity: 0,
+                                  reward: 0,
+                                })
+                              }
+                            >
+                              bid
+                            </Button>
+                          ) : (
+                            <Text opacity={0.5}>Join to buy items</Text>
+                          )}
+                        </Group>
+                      ))
+                    : null
+                )
+              : null}
+          </Stack>
         </Stack>
       </Stack>
     </>

@@ -10,7 +10,7 @@ import deleteIcon from "@/assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_op
 import exitIcon from "@/assets/icons/exit_to_app_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import profileIcon from "@/assets/icons/face_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
-export const OrgMemberCard = ({ userIsOwner, member, orgId }) => {
+export const OrgMemberCard = ({ cardIsOwner, userIsOwner, member, orgId }) => {
   const navigate = useNavigate();
   const { user } = useAuthContext();
   const { setIsLoading, selectedOrg, setSelectedOrg, setRelatedOrgs } =
@@ -38,23 +38,29 @@ export const OrgMemberCard = ({ userIsOwner, member, orgId }) => {
   };
 
   const handleRemoveMember = async (member, orgId) => {
-    console.log("handleRemoveMember");
-    if (userIsOwner) {
+    if (cardIsOwner) {
       await fetchOwnerFromOrg(member, orgId);
-      // update state
+      // update frm owner state
       selectedOrg.members = selectedOrg.owners.filter(
         (orgMember) => orgMember.documentId != member.documentId
       );
-      setSelectedOrg(selectedOrg);
     } else {
-      // await fetchRemoveMemberFromOrg(member, orgId);
-      // update state
-      const relatedOrgs = await fetchRelatedOrgs();
-      setRelatedOrgs(relatedOrgs);
-      setSelectedOrg(null);
-      if (member.documentId === user.documentId) {
-        navigate("/profile", { replace: true });
-      }
+      await fetchRemoveMemberFromOrg(member, orgId);
+      // update frm member state
+      selectedOrg.members = selectedOrg.members.filter(
+        (orgMember) => orgMember.documentId != member.documentId
+      );
+    }
+    // update state
+    setSelectedOrg(selectedOrg);
+
+    const relatedOrgs = await fetchRelatedOrgs();
+    setRelatedOrgs(relatedOrgs);
+    console.log(relatedOrgs);
+
+    // redirects
+    if (member.documentId === user.documentId) {
+      navigate("/profile", { replace: true });
     }
   };
 
@@ -110,22 +116,30 @@ export const OrgMemberCard = ({ userIsOwner, member, orgId }) => {
     <Group
       gap={"0rem"}
       m="6"
+      bg="white"
       style={{
-        backgroundColor:
-          userIsOwner && member.documentId === user.documentId
-            ? "gold"
-            : "white",
         borderRadius: "0.2rem",
         filter: "drop-shadow(0px 0px 2px rgb(230, 230, 230))",
       }}
       justify="space-between"
     >
       <Group>
-        <Avatar radius="0" size="md">
+        <Avatar
+          radius="0"
+          size="md"
+          style={{
+            border: `4px solid ${cardIsOwner ? "gold" : "white"}`,
+            borderColor: cardIsOwner ? "gold" : "white",
+          }}
+        >
           <Image src={profileIcon} />
         </Avatar>
 
-        <Text tt="capitalize" c="black">
+        <Text
+          tt="capitalize"
+          c="black"
+          fw={member.documentId === user.documentId ? 600 : 400}
+        >
           {member.username}
         </Text>
       </Group>

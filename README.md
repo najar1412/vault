@@ -9,15 +9,15 @@ devDev1!
 
 #### backend:
 
-1) fill out config
+1. fill out config
 
 cp `.env.example` `.env` and fill out
 
-2) set `url` for admin panel (comment out for dev)
+2. set `url` for admin panel (comment out for dev)
 
 `/backend/config/server.js`
 
-3) build app
+3. build app
 
 use `ecosystem.config.cjs` files for pm2 management on prod
 
@@ -25,9 +25,9 @@ use `ecosystem.config.cjs` files for pm2 management on prod
 
 #### frontend:
 
-1) build app
+1. build app
 
-```npm run build```
+`npm run build`
 
 use `ecosystem.config.cjs` files for pm2 management on prod
 
@@ -37,12 +37,9 @@ use `ecosystem.config.cjs` files for pm2 management on prod
 
 prepare for users
 
-- **_fix local strapi admin acccess_**
 - user flow
-  - create org does not update user -> forward to org page
   - basic user feed back (mantine tool tips, not working etc)
   - clean up add member flow (updating ui, redirects mostly), remove member flow
-  - deleting member from org doesnt update ui
   - on leave/join org, refresh ui, redirect
 - Vaults
   - allow editing of items in the table (quanity, note etc)
@@ -50,7 +47,6 @@ prepare for users
   - dont know the difference difference (visually or programically) between org and personal vault?
 - Orgs
   - if no organisation, redirect user to profile
-  - delete org
 - database seeding / need starter items
 - analytics?
 

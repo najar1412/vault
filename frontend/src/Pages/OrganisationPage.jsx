@@ -145,7 +145,7 @@ const OrganisationPage = () => {
               </Text>
             </Stack>
 
-            {orgNotifications.length ? (
+            {selectedOrg && orgNotifications.length ? (
               <Grid>
                 <Grid.Col span={6}>
                   <Stack>
@@ -337,6 +337,7 @@ const OrganisationPage = () => {
                     {selectedOrg.owners.map((owner) => (
                       <OrgMemberCard
                         userIsOwner={userIsOwner}
+                        cardIsOwner={true}
                         key={owner.username}
                         member={owner}
                         orgId={selectedOrg.documentId}
