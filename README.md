@@ -33,7 +33,7 @@ use `ecosystem.config.cjs` files for pm2 management on prod
 
 `pm2 start ecosystem.config.cjs`
 
-## TODOw
+## TODO
 
 prepare for users
 
@@ -46,7 +46,6 @@ prepare for users
   - dont know the difference difference (visually or programically) between org and personal vault?
 - Orgs
   - if no organisation, redirect user to profile
-- database seeding / need starter items
 - analytics?
 
-- better item schema, needs to include ship comps, weap sizes, commodidies and scu sizes?
+- better item schema for commodidies and scu sizes?

@@ -24,6 +24,20 @@ import { useAuthContext } from "@/context/AuthContext";
 import filterIcon from "@/assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import searchIcon from "@/assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import bugIcon from "@/assets/icons/bug_report_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import componentIcon from "@/assets/icons/bottom_app_bar_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import armorIcon from "@/assets/icons/local_police_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import bentoIcon from "@/assets/icons/bento_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import accountTreeIcon from "@/assets/icons/account_tree_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import usbIcon from "@/assets/icons/usb_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+
+// TODO: get from db
+const ITEM_TYPES = {
+  general: { icon: bentoIcon },
+  ship_component: { icon: componentIcon },
+  ship_weapon: { icon: accountTreeIcon },
+  fps_weapon: { icon: usbIcon },
+  fps_armor: { icon: armorIcon },
+};
 
 function HomePage() {
   const [organisations, setOrganisations] = useState(false);
@@ -175,7 +189,50 @@ function HomePage() {
                   vault.Items
                     ? vault.Items.map((item) => (
                         <Group key={item.documentId}>
-                          <Text>{item.item.name}</Text>
+                          <Stack gap={0}>
+                            <Group gap="xs">
+                              <Avatar
+                                src={ITEM_TYPES[item.item.type].icon}
+                                size="sm"
+                              />
+                              <Stack gap={0}>
+                                <Group>
+                                  <Text size="sm" fw={500}>
+                                    {item.item.name}
+                                  </Text>
+                                  <Text size="xs" opacity={0.5}>
+                                    {item.item.type}
+                                  </Text>
+                                </Group>
+
+                                <Group>
+                                  {item.item.category ? (
+                                    <Text size="xs" ta="center" tt="uppercase">
+                                      {item.item.category
+                                        ? item.item.category
+                                        : " "}
+                                    </Text>
+                                  ) : null}
+                                  {item.item.size ? (
+                                    <Text size="xs" ta="center">
+                                      {item.item.size ? item.item.size : " "}
+                                    </Text>
+                                  ) : null}
+                                  {item.item.grade ? (
+                                    <Text size="xs" ta="center" tt="uppercase">
+                                      {item.item.grade ? item.item.grade : " "}
+                                    </Text>
+                                  ) : null}
+
+                                  {item.item.class ? (
+                                    <Text size="xs" ta="center" tt="uppercase">
+                                      {item.item.class ? item.item.class : " "}
+                                    </Text>
+                                  ) : null}
+                                </Group>
+                              </Stack>
+                            </Group>
+                          </Stack>
                           <Text>x{item.quantity}</Text>
                           {user ? (
                             <Button
