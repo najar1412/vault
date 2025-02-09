@@ -1,18 +1,16 @@
-import { useState } from "react";
-
+import { useNavigate } from "react-router";
 import { Button, Stack, Group, TextInput, Modal, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useAuthContext } from "../../context/AuthContext";
-import { getToken } from "../../helpers";
-import { API } from "../../constant";
-import { useSiteStore } from "../../Store";
-import { useNavigate } from "react-router";
+
+import { useAuthContext } from "@/context/AuthContext";
+import { getToken } from "@/helpers";
+import { API } from "@/constant";
+import { useSiteStore } from "@/Store";
 
 export const CreatePersonalVaultModal = () => {
-  const navigate = useNavigate()
-  const {customModal} = useSiteStore();
+  const navigate = useNavigate();
+  const { customModal, setIsLoading } = useSiteStore();
   const { user, setUser } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
 
   const form = useForm({
     mode: "uncontrolled",
@@ -27,14 +25,12 @@ export const CreatePersonalVaultModal = () => {
 
   const createVault = async (data) => {
     setIsLoading(true);
-    // const vaultId = vault.data.documentId;
 
     try {
       const response = await fetch(`${API}/vaults/createVault`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -48,7 +44,6 @@ export const CreatePersonalVaultModal = () => {
       return tData;
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -66,8 +61,8 @@ export const CreatePersonalVaultModal = () => {
 
     const newVault = await createVault(data);
     setUser(newVault.user);
-    customModal.close()
-    navigate(`/vault/${newVault.newVault.documentId}`)
+    customModal.close();
+    navigate(`/vault/${newVault.newVault.documentId}`);
   };
 
   return (

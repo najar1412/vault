@@ -1,43 +1,17 @@
-import { useState } from "react";
+import { Text, Stack, Grid, Tabs, Divider } from "@mantine/core";
 
-import {
-  Text,
-  Group,
-  Button,
-  Stack,
-  Title,
-  Grid,
-  Alert,
-  Tabs,
-  Divider,
-} from "@mantine/core";
-import { useNavigate } from "react-router";
-
-import { useAuthContext } from "../context/AuthContext";
 import { PageTitle } from "../components/PageTitle";
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { NotificationCard } from "../components/NotificationCard";
 
+import { useAuthContext } from "../context/AuthContext";
+import { useSiteStore } from "../Store";
 import { API } from "../constant";
 import { getToken } from "../helpers";
-import { useSiteStore } from "../Store";
-
-import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import vaultIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import orgIcon from "../assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import notificationIcon from "../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import membersIcon from "../assets/icons/group_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import { VaultCard } from "../components/VaultCard";
-import { OrgCard } from "../components/OrgCard";
 
 const NotificationPage = () => {
-  const { notifications } = useSiteStore();
-  const [loading, setLoading] = useState(false);
-  const { user, isLoading, setUser } = useAuthContext();
-
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const { notifications, setIsLoading } = useSiteStore();
+  const { user } = useAuthContext();
 
   const breadcrumbs = [
     {
@@ -50,17 +24,13 @@ const NotificationPage = () => {
     },
   ];
 
-  if (isLoading) {
-    return "loading...";
-  }
-
   const acceptOrgInvite = async (notifDocumentId) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/notifications/${notifDocumentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -75,11 +45,12 @@ const NotificationPage = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const addMemberToOrg = async (updatedNotif) => {
+    setIsLoading(true);
     try {
       const response = await fetch(
         `${API}/organisations/${updatedNotif.senderId}?populate=members`,
@@ -102,7 +73,7 @@ const NotificationPage = () => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
@@ -110,6 +81,7 @@ const NotificationPage = () => {
     const updatedNotif = await acceptOrgInvite(notifDocumentId);
     await addMemberToOrg(updatedNotif.data);
   };
+
   return (
     <>
       <Breadcrumbs breadcrumbs={breadcrumbs} />
@@ -176,11 +148,14 @@ const NotificationPage = () => {
               </Grid.Col>
               <Grid.Col span={6}>
                 <Stack>
-                  <Text>Sent {
+                  <Text>
+                    Sent{" "}
+                    {
                       notifications.filter(
                         (notif) => notif.senderId === user.documentId
                       ).length
-                    }</Text>
+                    }
+                  </Text>
                 </Stack>
                 <Tabs defaultValue="sent-resolved">
                   <Tabs.List>

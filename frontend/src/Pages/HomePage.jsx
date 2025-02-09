@@ -1,5 +1,6 @@
+import { useEffect, useState } from "react";
+
 import {
-  Container,
   Text,
   Group,
   Button,
@@ -9,23 +10,22 @@ import {
   Avatar,
   Image,
 } from "@mantine/core";
-import { useEffect, useState } from "react";
+import { useForm } from "@mantine/form";
+
 import { Breadcrumbs } from "../components/Breadcrumbs";
 import { PageTitle } from "../components/PageTitle";
+
 import { API } from "../constant";
-import { useForm } from "@mantine/form";
 import { useSiteStore } from "../Store";
-import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import { useAuthContext } from "../context/AuthContext";
+
 import filterIcon from "../assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import searchIcon from "../assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import publicIcon from "../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-
-import { useAuthContext } from "../context/AuthContext";
 
 function HomePage() {
   const [organisations, setOrganisations] = useState(false);
   const [vaults, setVaults] = useState(false);
-  const { setCustomModalContent, customModal } = useSiteStore();
+  const { setCustomModalContent, setIsLoading } = useSiteStore();
   const { user } = useAuthContext();
 
   const breadcrumbs = [
@@ -47,57 +47,37 @@ function HomePage() {
   });
 
   const getOrgs = async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
-      const response = await fetch(
-        `${API}/organisations`
-        /* {
-            headers: {
-              "Content-Type": "application/json",
-              // set the auth token to the user's jwt
-              Authorization: `Bearer ${getToken()}`,
-            },
-          } */
-      );
+      const response = await fetch(`${API}/organisations`);
       const data = await response.json();
+
       setOrganisations(data.data ? data.data : []);
-      // setOwnerOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
       // message.error("Error while fetching profiles!");
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const fetchMarketableVaults = async () => {
-    // setIsLoading(true);
+    setIsLoading(true);
     try {
       const response = await fetch(
         `${API}/vaults?filters[marketable][$eq]=true&populate[0]=Items&populate[1]=Items.item`
-        /* {
-            headers: {
-              "Content-Type": "application/json",
-              // set the auth token to the user's jwt
-              Authorization: `Bearer ${getToken()}`,
-            },
-          } */
       );
       const data = await response.json();
-      console.log(data);
+
       setVaults(data.data ? data.data : []);
-      // setOwnerOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleItemBid = async (data) => {
-    console.log("collect");
-    console.log(data);
     setCustomModalContent({ type: "bidItem", data: data });
   };
 

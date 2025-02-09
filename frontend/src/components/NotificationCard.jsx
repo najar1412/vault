@@ -1,12 +1,14 @@
 import { Alert, Group, Button, Text, Stack } from "@mantine/core";
 
-import { getToken } from "../helpers";
-import { API } from "../constant";
-
 import { ConfirmDeal } from "./notification-templates/ConfirmDeal";
 import { CancelOrgInvite } from "./notification-templates/CancelOrgInvite";
 
-export const NotificationCard = ({ children, notif, isSender, user }) => {
+import { useSiteStore } from "../Store";
+import { getToken } from "../helpers";
+import { API } from "../constant";
+
+export const NotificationCard = ({ notif, isSender }) => {
+  const { setIsLoading } = useSiteStore();
   const HandleTemplateSelect = ({ notif }) => {
     if (notif.type === "confirm-deal") {
       return <ConfirmDeal isSender={isSender} notif={notif} />;
@@ -16,12 +18,12 @@ export const NotificationCard = ({ children, notif, isSender, user }) => {
   };
 
   const cancelNotification = async (notifDocumentId) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/notifications/${notifDocumentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -36,17 +38,17 @@ export const NotificationCard = ({ children, notif, isSender, user }) => {
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const updateNotification = async (notifDocumentId) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/notifications/${notifDocumentId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -56,22 +58,22 @@ export const NotificationCard = ({ children, notif, isSender, user }) => {
           },
         }),
       });
-      const tData = await response.json();
-      return tData;
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const addMemberToOrg = async (notif) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/organisations/${notif.senderId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -80,17 +82,16 @@ export const NotificationCard = ({ children, notif, isSender, user }) => {
           },
         }),
       });
-      const tData = await response.json();
-      return tData;
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error(error);
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 
   const handleAcceptOrgInvite = async (notif) => {
-    // console.log(notif);
     await updateNotification(notif.documentId);
     await addMemberToOrg(notif);
   };
@@ -133,8 +134,6 @@ export const NotificationCard = ({ children, notif, isSender, user }) => {
             </Button>
           </Group>
         ) : null}
-
-        {/* {children} */}
 
         <Group>
           <Text size="xs" opacity={0.5}>

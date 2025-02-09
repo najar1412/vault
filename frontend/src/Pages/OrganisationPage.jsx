@@ -13,7 +13,6 @@ import {
   Tabs,
   Divider,
 } from "@mantine/core";
-import { useNavigate } from "react-router";
 
 import { useSiteStore } from "@/Store";
 import { useAuthContext } from "@/context/AuthContext";
@@ -34,14 +33,8 @@ import { NotificationCard } from "@/components/NotificationCard";
 
 const OrganisationPage = () => {
   const { user } = useAuthContext();
-  const { selectedOrg, setCustomModalContent } = useSiteStore();
+  const { selectedOrg, setCustomModalContent, setIsLoading } = useSiteStore();
   const [orgNotifications, setOrgNotifications] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [members, setMembers] = useState(false);
-  const [owners, setOwners] = useState(false);
-
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
 
   const breadcrumbs = [
     {
@@ -54,31 +47,6 @@ const OrganisationPage = () => {
     },
   ];
 
-  const fetchMembers = async () => {
-    setIsLoading(true);
-    try {
-      const response = await fetch(
-        `${API}/organisations/${selectedOrg.documentId}?populate=owners&populate=members`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            // set the auth token to the user's jwt
-            Authorization: `Bearer ${getToken()}`,
-          },
-        }
-      );
-      const data = await response.json();
-      setOwners(data.data.owners.length ? data.data.owners : false);
-      setMembers(data.data.members.length ? data.data.members : false);
-    } catch (error) {
-      console.error(error);
-      // message.error("Error while fetching profiles!");
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
   const fetchOrgNotifications = async () => {
     setIsLoading(true);
     try {
@@ -87,17 +55,14 @@ const OrganisationPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
       );
       const data = await response.json();
       setOrgNotifications(data.data ? data.data : []);
-      // setOwnerOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -106,10 +71,6 @@ const OrganisationPage = () => {
   useEffect(() => {
     fetchOrgNotifications();
   }, [selectedOrg]);
-
-  if (isLoading) {
-    return "loading...";
-  }
 
   return (
     <>

@@ -1,18 +1,17 @@
-import { useState } from "react";
-
+import { useNavigate } from "react-router";
 import { Button, Stack, Group, TextInput, Modal, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
-import { useAuthContext } from "../../context/AuthContext";
-import { getToken } from "../../helpers";
-import { API } from "../../constant";
-import { useSiteStore } from "../../Store";
-import { useNavigate } from "react-router";
+
+import { useAuthContext } from "@/context/AuthContext";
+import { getToken } from "@/helpers";
+import { API } from "@/constant";
+import { useSiteStore } from "@/Store";
 
 export const CreateOrgVaultModal = () => {
   const navigate = useNavigate();
-  const { customModal, selectedOrg, setSelectedOrg } = useSiteStore();
-  const { user, setUser } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const { customModal, selectedOrg, setSelectedOrg, setIsLoading } =
+    useSiteStore();
+  const { user } = useAuthContext();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -33,7 +32,6 @@ export const CreateOrgVaultModal = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({

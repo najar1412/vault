@@ -1,13 +1,14 @@
 import { useState, useEffect } from "react";
 
-import { AuthContext } from "../../context/AuthContext";
+import { AuthContext } from "@/context/AuthContext";
+import { useSiteStore } from "@/Store";
 
-import { API, BEARER } from "../../constant";
-import { getToken, removeToken } from "../../helpers";
+import { API, BEARER } from "@/constant";
+import { getToken, removeToken } from "@/helpers";
 
 const AuthProvider = ({ children }) => {
+  const { isLoading, setIsLoading } = useSiteStore();
   const [userData, setUserData] = useState();
-  const [isLoading, setIsLoading] = useState(false);
 
   const authToken = getToken();
 

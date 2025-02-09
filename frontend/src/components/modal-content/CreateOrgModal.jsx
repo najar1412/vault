@@ -1,13 +1,16 @@
-import { Text, Modal, Group, TextInput, Button, Stack } from "@mantine/core";
+import { Modal, Group, TextInput, Button, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-import { useAuthContext } from "../../context/AuthContext";
+import { useSiteStore } from "@/Store";
+import { useAuthContext } from "@/context/AuthContext";
 
-import { getToken } from "../../helpers";
-import { API } from "../../constant";
+import { getToken } from "@/helpers";
+import { API } from "@/constant";
 
 export const CreateOrgModal = () => {
+  const { setIsLoading } = useSiteStore();
   const { user } = useAuthContext();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
@@ -24,37 +27,28 @@ export const CreateOrgModal = () => {
   };
 
   const createOrg = async (data) => {
-    // setIsLoading(true);
-    // const vaultId = vault.data.documentId;
-
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/organisations`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
           data: {
             name: data.name,
-            // userId: user.id,
             owners: { connect: [user.documentId] },
           },
         }),
       });
-      // const newVault = await response.json();
+
       const tData = await response.json();
       return tData;
-
-      // await postToVault(newVault.documentId);
-
-      // await fetchVault();
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
-      // setIsLoading(false);
+      setIsLoading(false);
     }
   };
 

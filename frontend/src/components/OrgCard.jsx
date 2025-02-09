@@ -1,22 +1,23 @@
 import { Group, Text, UnstyledButton, Image, Box, Avatar } from "@mantine/core";
-import { useState } from "react";
 import { Link } from "react-router";
+
 import { API } from "../constant";
 import { getToken } from "../helpers";
-import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import { useSiteStore } from "../Store";
+
 import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import leaveIcon from "../assets/icons/logout_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import groupIcon from "../assets/icons/groups_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import { useSiteStore } from "../Store";
 
 export const OrgCard = ({ organisation }) => {
-  const { setSelectedOrg } = useSiteStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const { setSelectedOrg, setIsLoading } = useSiteStore();
 
-  const handleDeleteVault = async () => {
+  const handleLeaveOrg = async () => {
+    console.log("handleLeaveOrg");
     // delete owner from organ
     //await fetchLeaveOrg();
   };
+
   const fetchLeaveOrg = async () => {
     setIsLoading(true);
     try {
@@ -73,7 +74,7 @@ export const OrgCard = ({ organisation }) => {
             <UnstyledButton>
               <Image src={editIcon} />
             </UnstyledButton>
-            <UnstyledButton onClick={() => handleDeleteVault()}>
+            <UnstyledButton onClick={() => handleLeaveOrg()}>
               <Image src={leaveIcon} />
             </UnstyledButton>
           </Group>

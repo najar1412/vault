@@ -17,26 +17,24 @@ import { useDisclosure } from "@mantine/hooks";
 import { useForm } from "@mantine/form";
 import { useParams } from "react-router";
 
-import VaultTable from "../components/VaultTable";
-import Vault from "../components/Vault";
+import VaultTable from "@/components/VaultTable";
+import Vault from "@/components/Vault";
+import { Breadcrumbs } from "@/components/Breadcrumbs";
+import { PageTitle } from "@/components/PageTitle";
+import { PostToVaultForm } from "@/components/forms/PostToVaultForm";
 
-import { useSiteStore } from "../Store";
-import { API } from "../constant";
-import { getToken } from "../helpers";
-import { Breadcrumbs } from "../components/Breadcrumbs";
-import { PageTitle } from "../components/PageTitle";
-import { PostToVaultForm } from "../components/forms/PostToVaultForm";
+import { useSiteStore } from "@/Store";
+import { API } from "@/constant";
+import { getToken } from "@/helpers";
 
-import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import filterIcon from "../assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import searchIcon from "../assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import publicIcon from "../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import plusIcon from "@/assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import filterIcon from "@/assets/icons/filter_list_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import searchIcon from "@/assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import publicIcon from "@/assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 
 const VaultPage = () => {
   const { id } = useParams();
-  const { selectedOrg } = useSiteStore();
-  const [loading, setLoading] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const { selectedOrg, setIsLoading } = useSiteStore();
   const [vault, setVault] = useState(false);
 
   const [opened, { open, close }] = useDisclosure(false);
@@ -74,18 +72,15 @@ const VaultPage = () => {
         {
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
       );
       const data = await response.json();
-      console.log("**********");
-      console.log(data);
+
       setVault(data ?? []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -105,7 +100,6 @@ const VaultPage = () => {
   const postToVault = async (values) => {
     // TODO: currently theres no way to add a new element to strapis repeat components, the whole table needs to be replaced
     // find a better way?
-    close();
     setIsLoading(true);
     const vaultId = vault.data.documentId;
 
@@ -156,6 +150,7 @@ const VaultPage = () => {
       console.error(error);
       // message.error("Error while fetching profiles!");
     } finally {
+      close();
       setIsLoading(false);
     }
   };
@@ -163,7 +158,6 @@ const VaultPage = () => {
   const deleteFromVault = async (values) => {
     // TODO: currently theres no way to add a new element to strapis repeat components, the whole table needs to be replaced
     // find a better way?
-    close();
     setIsLoading(true);
     const vaultId = vault.data.documentId;
 
@@ -196,6 +190,7 @@ const VaultPage = () => {
       console.error(error);
       // message.error("Error while fetching profiles!");
     } finally {
+      close();
       setIsLoading(false);
     }
   };
@@ -244,7 +239,7 @@ const VaultPage = () => {
                     : "Sell vault contents on the market?"}
                 </Text>
                 <Button
-                fw={400}
+                  fw={400}
                   w="fit-content"
                   color={vault.data.marketable ? "red" : "blue"}
                   onClick={() => console.log("clicked")}

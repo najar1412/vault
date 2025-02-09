@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import {
   Text,
   Group,
@@ -8,40 +6,25 @@ import {
   Title,
   Grid,
   Image,
-  UnstyledButton,
   Divider,
 } from "@mantine/core";
-import { useNavigate } from "react-router";
 
-import { useAuthContext } from "../context/AuthContext";
 import { PageTitle } from "../components/PageTitle";
 import { Breadcrumbs } from "../components/Breadcrumbs";
+import { VaultCard } from "../components/VaultCard";
+import { OrgCard } from "../components/OrgCard";
 
-import { API } from "../constant";
-import { getToken } from "../helpers";
 import { useSiteStore } from "../Store";
+import { useAuthContext } from "../context/AuthContext";
 
 import plusIcon from "../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 import vaultIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import orgIcon from "../assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import notificationIcon from "../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import { VaultCard } from "../components/VaultCard";
-import { OrgCard } from "../components/OrgCard";
 
 const ProfilePage = () => {
-  const {
-    userVaults,
-    customModal,
-    setCustomModalContent,
-    memberOrgs,
-    ownerOrgs,
-  } = useSiteStore();
-  const [loading, setLoading] = useState(false);
-  const { user, isLoading, setUser } = useAuthContext();
-
-  const navigate = useNavigate();
-  const [error, setError] = useState("");
+  const { userVaults, setCustomModalContent, memberOrgs, ownerOrgs } =
+    useSiteStore();
+  const { user } = useAuthContext();
 
   const breadcrumbs = [
     {
@@ -49,10 +32,6 @@ const ProfilePage = () => {
       link: "",
     },
   ];
-
-  if (isLoading) {
-    return "loading...";
-  }
 
   return (
     <>
@@ -95,7 +74,9 @@ const ProfilePage = () => {
                 </Button>
 
                 {ownerOrgs && ownerOrgs.length ? (
-                  ownerOrgs.map((org) => <OrgCard organisation={org} />)
+                  ownerOrgs.map((org) => (
+                    <OrgCard key={org.documentId} organisation={org} />
+                  ))
                 ) : (
                   <Text opacity={0.5}>No owned organisations</Text>
                 )}
@@ -107,7 +88,9 @@ const ProfilePage = () => {
               <Text tt="capitalize">member Organisations</Text>
               <Stack gap={0}>
                 {memberOrgs && memberOrgs.length ? (
-                  memberOrgs.map((org) => <OrgCard organisation={org} />)
+                  memberOrgs.map((org) => (
+                    <OrgCard key={org.documentId} organisation={org} />
+                  ))
                 ) : (
                   <Text opacity={0.5}>No organisations</Text>
                 )}

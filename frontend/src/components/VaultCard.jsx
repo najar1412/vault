@@ -1,23 +1,27 @@
 import { Group, Text, UnstyledButton, Image, Box, Avatar } from "@mantine/core";
-import { useState } from "react";
 import { Link } from "react-router";
-import { API } from "../constant";
-import { getToken } from "../helpers";
-import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import groupIcon from "../assets/icons/groups_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import inventoryIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 import { useSiteStore } from "../Store";
+import { API } from "../constant";
+import { getToken } from "../helpers";
+
+import deleteIcon from "../assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import editIcon from "../assets/icons/edit_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import inventoryIcon from "../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 export const VaultCard = ({ vault, isPersonalVault }) => {
-  const { setUserVaults, userVaults, selectedOrg, setSelectedOrg } =
-    useSiteStore();
-  const [isLoading, setIsLoading] = useState(false);
+  const {
+    setUserVaults,
+    userVaults,
+    selectedOrg,
+    setSelectedOrg,
+    setIsLoading,
+  } = useSiteStore();
 
   const handleDeleteVault = async () => {
     await fetchDelVault();
   };
+
   const fetchDelVault = async () => {
     setIsLoading(true);
     try {
@@ -25,13 +29,11 @@ export const VaultCard = ({ vault, isPersonalVault }) => {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
       });
 
       if (isPersonalVault) {
-        // remove vault from state
         return setUserVaults(
           userVaults.filter(
             (userVault) => userVault.documentId !== vault.documentId
@@ -46,7 +48,6 @@ export const VaultCard = ({ vault, isPersonalVault }) => {
             method: "GET",
             headers: {
               "Content-Type": "application/json",
-              // set the auth token to the user's jwt
               Authorization: `Bearer ${getToken()}`,
             },
           }
@@ -54,21 +55,15 @@ export const VaultCard = ({ vault, isPersonalVault }) => {
         const newOrg = await response.json();
         setSelectedOrg(newOrg.data);
         return newOrg;
-        // setOwners(data.data.owners.length ? data.data.owners : false);
-        // setMembers(data.data.members.length ? data.data.members : false);
       } catch (error) {
         console.error(error);
-        // message.error("Error while fetching profiles!");
       } finally {
         setIsLoading(false);
       }
 
       return response;
-      // setOwners(data.data.owners.length ? data.data.owners : false);
-      // setMembers(data.data.members.length ? data.data.members : false);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }

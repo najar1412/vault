@@ -7,6 +7,8 @@ export const useSiteStore = create((set, get) => ({
   memberOrgs: [],
   ownerOrgs: [],
   notifications: [],
+  isLoading: false,
+  setIsLoading: (bool) => set(() => ({ isLoading: bool })),
   setRelatedOrgs: (orgs) => set(() => ({ memberOrgs: orgs })),
   setNotifications: (notifications) =>
     set(() => ({ notifications: notifications })),

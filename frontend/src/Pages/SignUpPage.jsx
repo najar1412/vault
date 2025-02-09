@@ -1,10 +1,11 @@
 import { useState } from "react";
 
-import { Link, useNavigate } from "react-router";
+import { useNavigate } from "react-router";
 import { TextInput, Group, Button, Container } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
 import { useAuthContext } from "../context/AuthContext";
+import { useSiteStore } from "../Store";
 
 import { API } from "../constant";
 import { setToken } from "../helpers";
@@ -12,7 +13,7 @@ import { setToken } from "../helpers";
 const SignUpPage = () => {
   const navigate = useNavigate();
   const { setUser } = useAuthContext();
-  const [isLoading, setIsLoading] = useState(false);
+  const { setIsLoading } = useSiteStore();
   const [error, setError] = useState("");
 
   const form = useForm({
@@ -43,10 +44,7 @@ const SignUpPage = () => {
       if (data?.error) {
         throw data?.error;
       } else {
-        // set the token
         setToken(data.jwt);
-
-        // set the user
         setUser(data.user);
 
         navigate("/profile", { replace: true });
@@ -79,7 +77,6 @@ const SignUpPage = () => {
         <TextInput
           withAsterisk
           label="password"
-          // placeholder="your@email.com"
           key={form.key("password")}
           {...form.getInputProps("password")}
         />

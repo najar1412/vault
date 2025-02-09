@@ -1,17 +1,12 @@
-import { useState } from "react";
-
 import { Button, Stack, Modal, Text } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-import { useSiteStore } from "../../Store";
-import { getToken } from "../../helpers";
-import { API } from "../../constant";
+import { useSiteStore } from "@/Store";
+import { getToken } from "@/helpers";
+import { API } from "@/constant";
 
 export const BidItemModal = () => {
-  console.log("BidItemModal");
-  const { customModal } = useSiteStore();
-  const [isLoading, setIsLoading] = useState(false);
-  const { selectedOrg } = useSiteStore();
+  const { customModal, setIsLoading } = useSiteStore();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -21,10 +16,9 @@ export const BidItemModal = () => {
       // email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
     },
   });
-  const fetchConfirmDeal = async (data) => {
-    console.log("fetchConfirmDeal");
-    console.log(data);
 
+  const fetchConfirmDeal = async (data) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/notifications/confirm-deal`, {
         method: "POST",
@@ -59,10 +53,7 @@ export const BidItemModal = () => {
   };
 
   const handleSubmit = async (data) => {
-    console.log("clicked");
-    console.log(data);
-    const confirmDealSent = await fetchConfirmDeal(data);
-    console.log(confirmDealSent);
+    await fetchConfirmDeal(data);
   };
   return (
     <>

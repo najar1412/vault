@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { Button, Group, Autocomplete, NumberInput, Stack } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
-import { API } from "../../constant";
-import { getToken } from "../../helpers";
+import { useSiteStore } from "@/Store";
+import { API } from "@/constant";
+import { getToken } from "@/helpers";
 
 export const PostToVaultForm = ({ post }) => {
-  const [isLoading, setIsLoading] = useState(false);
+  const { setIsLoading } = useSiteStore();
   const [items, setItems] = useState(false);
 
   const form = useForm({
@@ -30,7 +31,6 @@ export const PostToVaultForm = ({ post }) => {
       const response = await fetch(`${API}/items`, {
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
       });
@@ -38,7 +38,6 @@ export const PostToVaultForm = ({ post }) => {
       setItems(data ?? []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -47,10 +46,6 @@ export const PostToVaultForm = ({ post }) => {
   useEffect(() => {
     fetchItems();
   }, []);
-
-  if (isLoading) {
-    return "loading...";
-  }
 
   return (
     <form onSubmit={form.onSubmit((values) => handlePost(values))}>

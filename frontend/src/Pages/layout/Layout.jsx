@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 
 import { Outlet, Link, NavLink } from "react-router";
 import { useNavigate } from "react-router";
@@ -15,35 +15,31 @@ import {
 } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 
-import { CustomCombobox } from "../../components/CustomCombobox";
-import { useSiteStore } from "../../Store";
-import { useAuthContext } from "../../context/AuthContext";
-import { CustomModal } from "../../components/CustomModal";
+import { CustomCombobox } from "@/components/CustomCombobox";
+import { useSiteStore } from "@/Store";
+import { useAuthContext } from "@/context/AuthContext";
+import { CustomModal } from "@/components/CustomModal";
 
-import { API } from "../../constant";
-import { getToken } from "../../helpers";
+import { API } from "@/constant";
+import { getToken } from "@/helpers";
 
 import styles from "./Layout.module.css";
 
-import rewardIcon from "../../assets/icons/featured_seasonal_and_gifts_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import inventoryIcon from "../../assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import profileIcon from "../../assets/icons/face_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import orgIcon from "../../assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import plusIcon from "../../assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import notificationIcon from "../../assets/icons/notifications_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import cartIcon from "../../assets/icons/shopping_cart_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import publicIcon from "../../assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
-import marketIcon from "../../assets/icons/storefront_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
-import messageIcon from "../../assets/icons/mail_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
+import inventoryIcon from "@/assets/icons/package_2_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import orgIcon from "@/assets/icons/build_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import plusIcon from "@/assets/icons/add_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
+import cartIcon from "@/assets/icons/shopping_cart_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import marketIcon from "@/assets/icons/storefront_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import messageIcon from "@/assets/icons/mail_24dp_5F6368_FILL0_wght400_GRAD0_opsz24.svg";
 
 function Layout() {
   const {
+    setIsLoading,
     selectedOrg,
     setSelectedOrg,
     setUserVaults,
     userVaults,
     setCustomModal,
-    customModal,
     setOwnerOrgs,
     setCustomModalContent,
     setRelatedOrgs,
@@ -52,9 +48,8 @@ function Layout() {
     notifications,
   } = useSiteStore();
   const [opened, { open, close }] = useDisclosure(false);
-  const { user, setUser } = useAuthContext();
+  const { user } = useAuthContext();
   const navigate = useNavigate();
-  const [isLoading, setIsLoading] = useState(false);
 
   const fetchRelatedOrgs = async () => {
     setIsLoading(true);
@@ -64,7 +59,6 @@ function Layout() {
         {
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
@@ -73,11 +67,11 @@ function Layout() {
       setRelatedOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
   };
+
   const fetchOwnerOrgs = async () => {
     setIsLoading(true);
     try {
@@ -86,7 +80,6 @@ function Layout() {
         {
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
@@ -95,7 +88,6 @@ function Layout() {
       setOwnerOrgs(data.data.length ? data.data : []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -109,28 +101,17 @@ function Layout() {
         {
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
       );
       const data = await response.json();
-      console.log("((((((");
-      console.log(data.data);
       setNotifications(data.data ? data.data : []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
-  };
-
-  const fetchOrgs = async () => {
-    // setIsLoading(true);
-    await fetchOwnerOrgs();
-    await fetchRelatedOrgs();
-    await fetchUser();
   };
 
   const fetchUser = async () => {
@@ -139,17 +120,14 @@ function Layout() {
       const response = await fetch(`${API}/users/me?populate=vaults`, {
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
       });
 
       const data = await response.json();
-      // setUser(data)
       setUserVaults(data.vaults ?? []);
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
@@ -163,7 +141,6 @@ function Layout() {
           method: "GET",
           headers: {
             "Content-Type": "application/json",
-            // set the auth token to the user's jwt
             Authorization: `Bearer ${getToken()}`,
           },
         }
@@ -173,10 +150,15 @@ function Layout() {
       return newOrg;
     } catch (error) {
       console.error(error);
-      // message.error("Error while fetching profiles!");
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleFetchingOrgs = async () => {
+    await fetchOwnerOrgs();
+    await fetchRelatedOrgs();
+    await fetchUser();
   };
 
   const handleSelectedOrg = async (name) => {
@@ -187,7 +169,7 @@ function Layout() {
 
   useEffect(() => {
     if (user) {
-      fetchOrgs();
+      handleFetchingOrgs();
       setCustomModal({ opened: opened, open: open, close: close });
       fetchUserNotifications(user);
     }
@@ -211,22 +193,7 @@ function Layout() {
           {user ? (
             <Grid.Col span={user ? 2 : 0}>
               <Stack gap={"xl"} p={"md"}>
-                {/* <Link to="/profile" style={{ textDecoration: "none" }}>
-                  <Group>
-                    <Avatar />
-                    <Text c={"black"} tt="capitalize">
-                      {user.username}
-                    </Text>
-                  </Group>
-                </Link> */}
-
-                <NavLink
-                  to="/profile"
-                  /* className={({ isActive }) =>
-                    isActive ? styles.active : styles["not-active"]
-                  } */
-                  style={{ textDecoration: "none" }}
-                >
+                <NavLink to="/profile" style={{ textDecoration: "none" }}>
                   <Group gap={"xs"} wrap="no-wrap">
                     <Avatar />
                     <Text
@@ -257,7 +224,6 @@ function Layout() {
                             color="black"
                             fw="400"
                             leftSection={<Image src={plusIcon} />}
-                            // onClick={open}
                             w={"fit-content"}
                           >
                             Org settings
@@ -329,27 +295,6 @@ function Layout() {
                           </Badge>
                         ) : null}
                       </Group>
-
-                      {/* <NavLink
-                      to="/reward-calculator"
-                      className={({ isActive }) =>
-                        isActive ? styles.active : styles["not-active"]
-                      }
-                      style={{ textDecoration: "none" }}
-                    >
-                      <Group gap={"xs"} wrap="no-wrap">
-                        <Image src={rewardIcon} />
-                        <Text
-                          size="sm"
-                          td={"none"}
-                          c={"black"}
-                          tt={"capitalize"}
-                          fw={"500"}
-                        >
-                          rewards
-                        </Text>
-                      </Group>
-                    </NavLink> */}
                     </Stack>
 
                     <Stack gap={"xs"}>

@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Button, Stack, Group, TextInput, Modal } from "@mantine/core";
 import { useForm } from "@mantine/form";
 
@@ -8,8 +6,7 @@ import { getToken } from "../../helpers";
 import { useSiteStore } from "../../Store";
 
 export const AddMemberModal = () => {
-  const [isLoading, setIsLoading] = useState(false);
-  const { selectedOrg } = useSiteStore();
+  const { selectedOrg, setIsLoading } = useSiteStore();
 
   const form = useForm({
     mode: "uncontrolled",
@@ -21,13 +18,14 @@ export const AddMemberModal = () => {
       // email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
     },
   });
+
   const fetchSendMemberInvite = async (values) => {
+    setIsLoading(true);
     try {
       const response = await fetch(`${API}/notifications/invite-member`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          // set the auth token to the user's jwt
           Authorization: `Bearer ${getToken()}`,
         },
         body: JSON.stringify({
@@ -41,8 +39,8 @@ export const AddMemberModal = () => {
           },
         }),
       });
-      const tData = await response.json();
-      return tData;
+      const data = await response.json();
+      return data;
     } catch (error) {
       console.error(error);
     } finally {
@@ -51,8 +49,7 @@ export const AddMemberModal = () => {
   };
 
   const handleSubmit = async (values) => {
-    const memberInvite = await fetchSendMemberInvite(values);
-    // onSuccessHandler(memberInvite);
+    await fetchSendMemberInvite(values);
   };
   return (
     <>
