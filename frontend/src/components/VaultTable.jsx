@@ -11,6 +11,7 @@ import {
   UnstyledButton,
   Stack,
 } from "@mantine/core";
+import { useForm } from "@mantine/form";
 import { v4 as uuidv4 } from "uuid";
 
 import { ItemQuantity } from "./ItemQuantity";
@@ -21,6 +22,8 @@ import armorIcon from "@/assets/icons/local_police_24dp_000000_FILL0_wght400_GRA
 import bentoIcon from "@/assets/icons/bento_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import accountTreeIcon from "@/assets/icons/account_tree_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import usbIcon from "@/assets/icons/usb_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import deleteIcon from "@/assets/icons/delete_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
+import saveIcon from "@/assets/icons/save_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 
 const crypto = () => uuidv4();
 
@@ -33,8 +36,42 @@ const ITEM_TYPES = {
   fps_armor: { icon: armorIcon },
 };
 
-const VaultTable = ({ columns, elements, deleteItem }) => {
+const VaultTable = ({ columns, elements, deleteItem, saveItem, canEdit }) => {
   const [sortedColumn, setSortedColumn] = useState(columns[0]);
+
+  const FormUpdateItem = ({ element, id }) => {
+    const form = useForm({
+      mode: "uncontrolled",
+      initialValues: {
+        note: "",
+        itemId: element.item.id,
+      },
+
+      validate: {
+        // email: (value) => (/^\S+@\S+$/.test(value) ? null : "Invalid email"),
+      },
+    });
+
+    const handleItemUpdate = (values) => {
+      saveItem({ itemId: values.itemId, note: values.note });
+    };
+
+    return (
+      <form onSubmit={form.onSubmit((values) => handleItemUpdate(values))}>
+        <Group wrap="no-wrap" gap={0} align="center">
+          <TextInput
+            placeholder={element[id]}
+            key={form.key("note")}
+            // value={element[id]}
+            {...form.getInputProps("note")}
+          />
+          <Button type="submit" color="lightgray" variant="outline">
+            <Image src={saveIcon} />
+          </Button>
+        </Group>
+      </form>
+    );
+  };
 
   const row2 = elements.map((element, i) => (
     <Table.Tr key={i}>
@@ -42,26 +79,29 @@ const VaultTable = ({ columns, elements, deleteItem }) => {
         if (k === "quantity") {
           return (
             <Table.Td key={element[k]}>
-              <ItemQuantity item={element} />
+              {canEdit ? (
+                <ItemQuantity item={element} />
+              ) : (
+                <Text size="xs">{element.item.quantity}</Text>
+              )}
             </Table.Td>
           );
         } else if (k === "delete") {
-          return (
+          return canEdit ? (
             <Table.Td key={`delete-${i}`}>
-              <Button
-                variant="outline"
-                color="red"
-                fw="500"
-                onClick={() => deleteItem(element.item.id)}
-              >
-                Delete
-              </Button>
+              <UnstyledButton onClick={() => deleteItem(element.item.id)}>
+                <Image src={deleteIcon} />
+              </UnstyledButton>
             </Table.Td>
-          );
+          ) : null;
         } else if (k === "note") {
           return (
             <Table.Td key={crypto()}>
-              <TextInput />
+              {canEdit ? (
+                <FormUpdateItem element={element} id={k} />
+              ) : (
+                <Text size="xs">{k}</Text>
+              )}
             </Table.Td>
           );
         } else if (columns.includes(k)) {

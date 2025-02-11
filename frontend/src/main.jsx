@@ -71,6 +71,14 @@ createRoot(document.getElementById("root")).render(
                   }
                 />
                 <Route
+                  path="organisation/vault/:id"
+                  element={
+                    <VaultPage
+                      isOrgVault
+                    /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */
+                  }
+                />
+                <Route
                   path="reward-calculator"
                   element={
                     <RewardCalculatorPage /> /* getToken() ? <Profile /> : <Navigate to="/signin" /> */

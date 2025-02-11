@@ -105,6 +105,22 @@
     "type": "ship_weapon",
     "category": "ballistic_cannon"
   },
+  {
+    "name": "NN-14 Cannon",
+    "size": 1,
+    "grade": "a",
+    "class": null,
+    "type": "ship_weapon",
+    "category": "neutron_cannon"
+  },
+  {
+    "name": "Absolution Distortion Scattergun",
+    "size": 1,
+    "grade": "a",
+    "class": null,
+    "type": "ship_weapon",
+    "category": "distortion_scattergun"
+  },
 
   {
     "name": "Custodian 'Midnight' SMG",
@@ -122,5 +138,141 @@
     "class": null,
     "type": "fps_armor",
     "category": "light_armor"
+  },
+  {
+    "name": "Drift",
+    "size": 1,
+    "grade": "c",
+    "class": "Stealth",
+    "type": "ship_component",
+    "category": "quantum_drive"
+  },
+  {
+    "name": "MegaFlux",
+    "size": 3,
+    "grade": "b",
+    "class": "military",
+    "type": "ship_component",
+    "category": "power_plant"
+  },
+  {
+    "name": "Blizzard",
+    "size": 3,
+    "grade": "a",
+    "class": "military",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "Forcewall",
+    "size": 1,
+    "grade": "b",
+    "class": "military",
+    "type": "ship_component",
+    "category": "shield"
+  },
+  {
+    "name": "Fulgur",
+    "size": 3,
+    "grade": "b",
+    "class": "military",
+    "type": "ship_component",
+    "category": "power_planet"
+  },
+  {
+    "name": "Fullblock",
+    "size": 3,
+    "grade": "b",
+    "class": "military",
+    "type": "ship_component",
+    "category": "shield"
+  },
+  {
+    "name": "Coverall",
+    "size": 2,
+    "grade": "b",
+    "class": "military",
+    "type": "ship_component",
+    "category": "shield"
+  },
+  {
+    "name": "Avalanch",
+    "size": 2,
+    "grade": "a",
+    "class": "military",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "VaporBlock",
+    "size": 1,
+    "grade": "b",
+    "class": "stealth",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "Snowfall",
+    "size": 2,
+    "grade": "b",
+    "class": "industrial",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "NightFall",
+    "size": 2,
+    "grade": "a",
+    "class": "Stealth",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "Eclipse",
+    "size": 2,
+    "grade": "a",
+    "class": "Stealth",
+    "type": "ship_component",
+    "category": "power_plant"
+  },
+  {
+    "name": "Huracan",
+    "size": 2,
+    "grade": "b",
+    "class": "Industrial",
+    "type": "ship_component",
+    "category": "quantum_drive"
+  },
+  {
+    "name": "Umbra",
+    "size": 2,
+    "grade": "a",
+    "class": "Stealth",
+    "type": "ship_component",
+    "category": "shield"
+  },
+  {
+    "name": "Glacier",
+    "size": 1,
+    "grade": "a",
+    "class": "Military",
+    "type": "ship_component",
+    "category": "cooler"
+  },
+  {
+    "name": "Palisade",
+    "size": 1,
+    "grade": "a",
+    "class": "Industrial",
+    "type": "ship_component",
+    "category": "shield"
+  },
+  {
+    "name": "Slipstream",
+    "size": 1,
+    "grade": "a",
+    "class": "Stealth",
+    "type": "ship_component",
+    "category": "power plant"
   }
 ]

@@ -307,7 +307,7 @@ function Layout() {
                         selectedOrg.vaults.map((vault) => (
                           <NavLink
                             key={vault.name}
-                            to={`/vault/${vault.documentId}`}
+                            to={`/organisation/vault/${vault.documentId}`}
                             className={({ isActive }) =>
                               isActive ? styles.active : styles["not-active"]
                             }

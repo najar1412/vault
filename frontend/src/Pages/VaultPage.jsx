@@ -23,6 +23,7 @@ import { Breadcrumbs } from "@/components/Breadcrumbs";
 import { PageTitle } from "@/components/PageTitle";
 import { PostToVaultForm } from "@/components/forms/PostToVaultForm";
 
+import { useAuthContext } from "../context/AuthContext";
 import { useSiteStore } from "@/Store";
 import { API } from "@/constant";
 import { getToken } from "@/helpers";
@@ -32,12 +33,46 @@ import filterIcon from "@/assets/icons/filter_list_24dp_000000_FILL0_wght400_GRA
 import searchIcon from "@/assets/icons/search_24dp_000000_FILL0_wght400_GRAD0_opsz24.svg";
 import publicIcon from "@/assets/icons/visibility_24dp_FFFFFF_FILL0_wght400_GRAD0_opsz24.svg";
 
-const VaultPage = () => {
+const VaultPage = ({ isOrgVault }) => {
   const { id } = useParams();
   const { selectedOrg, setIsLoading } = useSiteStore();
+  const { user } = useAuthContext();
   const [vault, setVault] = useState(false);
+  const [userIsOwner, setUserIsOwner] = useState(false);
 
   const [opened, { open, close }] = useDisclosure(false);
+
+  const checkOwnership = async () => {
+    // TODO: check ownership at the db level
+    if (selectedOrg) {
+      const isOwner = selectedOrg.owners.filter(
+        (owner) => owner.documentId === user.documentId
+      );
+
+      if (isOwner.length) {
+        return setUserIsOwner(true);
+      }
+      setUserIsOwner(false);
+    }
+
+    /* try {
+      const response = await fetch(
+        `${API}/organisations`,
+        {
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${getToken()}`,
+          },
+        }
+      );
+      const data = await response.json();
+      setOrgNotifications(data.data ? data.data : []);
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    } */
+  };
 
   const form = useForm({
     mode: "uncontrolled",
@@ -55,7 +90,12 @@ const VaultPage = () => {
 
   const breadcrumbs = [
     {
-      label: selectedOrg ? selectedOrg.name : "",
+      label:
+        isOrgVault && selectedOrg
+          ? selectedOrg.name
+          : user
+          ? user.username
+          : "",
       link: "",
     },
     {
@@ -89,7 +129,7 @@ const VaultPage = () => {
   const transform = (data) =>
     data.map((item) => {
       return {
-        label: item.item.name,
+        label: item.item ? item.item.name : "",
         quantity: item.quantity,
         note: item.note,
         delete: true,
@@ -195,9 +235,65 @@ const VaultPage = () => {
     }
   };
 
+  const updateItemInVault = async (values) => {
+    // TODO: currently theres no way to add a new element to strapis repeat components, the whole table needs to be replaced
+    // find a better way?
+    console.log("imp: updateItemInVault");
+    console.log(values.itemId);
+
+    setIsLoading(true);
+
+    const vaultId = vault.data.documentId;
+
+    const filteredItems = vault.data.Items.map((item) => {
+      if (item.id === values.itemId) {
+        item.note = values.note;
+      }
+      return item;
+    });
+
+    const transformedItems = filteredItems.map((item) => {
+      return {
+        item: item.item.documentId,
+        quantity: item.quantity,
+        note: item.note,
+      };
+    });
+
+    try {
+      const response = await fetch(`${API}/vaults/${vaultId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          // set the auth token to the user's jwt
+          Authorization: `Bearer ${getToken()}`,
+        },
+        body: JSON.stringify({
+          data: {
+            Items: transformedItems,
+          },
+        }),
+      });
+      await response.json();
+      await fetchVault();
+    } catch (error) {
+      console.error(error);
+      // message.error("Error while fetching profiles!");
+    } finally {
+      close();
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     fetchVault();
   }, [id]);
+
+  useEffect(() => {
+    if (selectedOrg) {
+      checkOwnership();
+    }
+  }, [selectedOrg]);
 
   return vault ? (
     <>
@@ -214,42 +310,48 @@ const VaultPage = () => {
             />
           </Grid.Col>
           <Grid.Col span={6}>
-            <Alert
-              variant="light"
-              color={vault.data.marketable ? "red" : "blue"}
-              icon={
-                vault.data.marketable ? (
-                  <Badge color="red" p={0}>
-                    <Image src={publicIcon} width={"20rem"} height={"20rem"} />
-                  </Badge>
-                ) : null
-              }
-              title={
-                vault.data.marketable ? (
-                  <Text>Vault is public and listed on the market.</Text>
-                ) : (
-                  <Text>Vault is private</Text>
-                )
-              }
-            >
-              <Stack gap={0}>
-                <Text fw="400">
-                  {vault.data.marketable
-                    ? "Remove vault from the market?"
-                    : "Sell vault contents on the market?"}
-                </Text>
-                <Button
-                  fw={400}
-                  w="fit-content"
-                  color={vault.data.marketable ? "red" : "blue"}
-                  onClick={() => console.log("clicked")}
-                >
-                  {vault.data.marketable
-                    ? "Yes, remove my vault from the Market!"
-                    : "Yes, put my vault on the Market!"}
-                </Button>
-              </Stack>
-            </Alert>
+            {userIsOwner ? (
+              <Alert
+                variant="light"
+                color={vault.data.marketable ? "red" : "blue"}
+                icon={
+                  vault.data.marketable ? (
+                    <Badge color="red" p={0}>
+                      <Image
+                        src={publicIcon}
+                        width={"20rem"}
+                        height={"20rem"}
+                      />
+                    </Badge>
+                  ) : null
+                }
+                title={
+                  vault.data.marketable ? (
+                    <Text>Vault is public and listed on the market.</Text>
+                  ) : (
+                    <Text>Vault is private</Text>
+                  )
+                }
+              >
+                <Stack gap={0}>
+                  <Text fw="400">
+                    {vault.data.marketable
+                      ? "Remove vault from the market?"
+                      : "Sell vault contents on the market?"}
+                  </Text>
+                  <Button
+                    fw={400}
+                    w="fit-content"
+                    color={vault.data.marketable ? "red" : "blue"}
+                    onClick={() => console.log("clicked")}
+                  >
+                    {vault.data.marketable
+                      ? "Yes, remove my vault from the Market!"
+                      : "Yes, put my vault on the Market!"}
+                  </Button>
+                </Stack>
+              </Alert>
+            ) : null}
           </Grid.Col>
         </Grid>
 
@@ -284,19 +386,23 @@ const VaultPage = () => {
                   </Group>
                 </Group>
               </form>
-              <Button
-                color="black"
-                fw="400"
-                leftSection={<Image src={plusIcon} />}
-                onClick={open}
-              >
-                Add Item
-              </Button>
+              {userIsOwner ? (
+                <Button
+                  color="black"
+                  fw="400"
+                  leftSection={<Image src={plusIcon} />}
+                  onClick={open}
+                >
+                  Add Item
+                </Button>
+              ) : null}
             </Group>
           </Group>
 
           {vault.data.Items.length ? (
             <VaultTable
+              canEdit={userIsOwner}
+              saveItem={updateItemInVault}
               columns={columns}
               elements={transform(vault.data.Items)}
               deleteItem={deleteFromVault}
